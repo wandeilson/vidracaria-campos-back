@@ -26,8 +26,8 @@ public class UserService {
     }
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserDetails u = userRepository.findByEmail(email);
-        return u != null ? u: null;
+        UserDetails user = userRepository.findByEmail(email);
+        return user != null ? user: null;
     }
 
     public UserDTO getUserByEmail(String email) {
