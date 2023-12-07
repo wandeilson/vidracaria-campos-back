@@ -2,9 +2,10 @@ package com.vidracariaCampos.securitService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class CryptService {
     @Autowired
     private  PasswordEncoder passwordEncoder;

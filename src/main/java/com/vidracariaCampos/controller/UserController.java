@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -18,60 +19,62 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity create(@RequestBody UserDTO userDTO) {
-        if (userService.loadUserByUsername(userDTO.email()) != null) {
-            return ResponseEntity.badRequest().body("User already exists");
-        }
+    public ResponseEntity create(@RequestBody @Valid UserDTO userDTO) {
+        try {
 
-        userService.saveUser(userDTO);
-        return ResponseEntity.created(null).build();
+            userService.saveUser(userDTO);
+            return ResponseEntity.created(null).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
-    @GetMapping("/{email}")
-    public ResponseEntity<UserDTO> find(@PathVariable @Email String email) {
-            UserDTO user = userService.getUserByEmail(email);
-            if(user == null){
-                return ResponseEntity.notFound().build();
-            }
+    @GetMapping("/{id}")
+    public ResponseEntity find(@PathVariable UUID id) {
+        try {
+            UserDTO user = userService.getUserById(id);
             return ResponseEntity.ok().body(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
+    }
+    @GetMapping("/email/{email}")
+    public ResponseEntity findEmail(@PathVariable @Email String email) {
+        try {
+            UserDTO user = userService.getUserByEmail(email);
+            return ResponseEntity.ok().body(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
     @GetMapping("/all")
     public ResponseEntity< List<UserDTO>>findAll(){
-        try{
-            List<UserDTO> users = userService.getAllUsers();
-            return ResponseEntity.ok().body(users);
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+        List<UserDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok().body(users);
     }
 
     @PutMapping("/update")
     public ResponseEntity update(@RequestBody @Valid UserDTO userDTO){
-        if(userService.getUserByEmail(userDTO.email()) == null){
-            return ResponseEntity.notFound().build();
-        }
         try {
             userService.update(userDTO);
             return ResponseEntity.ok().build();
-
         }catch (Exception e){
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity delete(@PathVariable String email){
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable UUID id){
         try{
-            userService.deleteUser(email);
+            userService.deleteUser(id);
             return ResponseEntity.ok().build();
 
         } catch (Exception e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

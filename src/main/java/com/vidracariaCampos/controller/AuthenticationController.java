@@ -25,10 +25,14 @@ public class AuthenticationController {
 
     @PostMapping
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO dto){
-        var userNamePassword = new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
-        var auth = this.authenticationManager.authenticate(userNamePassword);
-        var token = tokenService.generateToken((User) auth.getPrincipal());
-        return ResponseEntity.ok(token);
+        try{
+            var userNamePassword = new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
+            var auth = this.authenticationManager.authenticate(userNamePassword);
+            var token = tokenService.generateToken((User) auth.getPrincipal());
+            return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body("Email or Password invalid");
+        }
     }
 
 }
