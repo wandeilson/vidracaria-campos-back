@@ -17,16 +17,19 @@ public class Customer implements Serializable {
     @GeneratedValue(generator = "UUID")
     private UUID id;
     private String name; // nome
+    @Column(name = "customer_type")
     private String customerType; // tipoCliente/ENUM
-    private String CPF_CNPJ; // CPF/CNPJ
+    private String cpf_cnpj; // CPF/CNPJ
     private String email; // email
     private String phone; // telefone
     private String address; // logradouro
+    @Column(name = "zip_code")
     private String zipCode; // CEP
     private String number; // numero
     private String city; // cidade
     private String state; // estado
     private String landmark; // pontoDeReferencia
+    @Column(name = "registration_date")
     private LocalDateTime registrationDate; // dataCriacao
 
 }
