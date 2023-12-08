@@ -47,4 +47,16 @@ public class TokenService {
              return "";
         }
     }
+    public boolean isValidToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token);
+            return true;
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+    }
 }
