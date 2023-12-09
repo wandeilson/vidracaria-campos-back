@@ -4,18 +4,16 @@ import com.vidracariaCampos.dto.AuthenticationDTO;
 import com.vidracariaCampos.entity.User;
 import com.vidracariaCampos.securitService.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     @Autowired
@@ -27,11 +25,20 @@ public class AuthenticationController {
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO dto){
         try{
             var userNamePassword = new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
-            var auth = this.authenticationManager.authenticate(userNamePassword);
+            var auth = authenticationManager.authenticate(userNamePassword);
             var token = tokenService.generateToken((User) auth.getPrincipal());
             return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
         }catch (Exception e) {
             return ResponseEntity.badRequest().body("Email or Password invalid");
+        }
+    }
+    @PostMapping("/validToken/{token}")
+    public ResponseEntity validToken(@PathVariable String token){
+        try{
+            if(tokenService.isValidToken(token) == false) return ResponseEntity.badRequest().body("token invalid");
+            else return ResponseEntity.ok().build();
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e);
         }
     }
 
