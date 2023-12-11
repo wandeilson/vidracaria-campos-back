@@ -32,8 +32,8 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(e);
         }
     }
-    @PostMapping("/isValidToken/{token}")
-    public ResponseEntity validToken(@PathVariable String token){
+    @PostMapping("/is-valid-token/{token}")
+    public ResponseEntity isValidToken(@PathVariable String token){
         try{
             if(tokenService.isValidToken(token) == false) {
                 return ResponseEntity.badRequest().body("token invalid");
