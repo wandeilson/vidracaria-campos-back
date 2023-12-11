@@ -32,11 +32,15 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body("Email or Password invalid");
         }
     }
-    @PostMapping("/validToken/{token}")
-    public ResponseEntity validToken(@PathVariable String token){
+    @PostMapping("/is-valid-token/{token}")
+    public ResponseEntity isValidToken(@PathVariable String token){
         try{
-            if(tokenService.isValidToken(token) == false) return ResponseEntity.badRequest().body("token invalid");
-            else return ResponseEntity.ok().build();
+            if(tokenService.isValidToken(token) == false) {
+                return ResponseEntity.badRequest().body("token invalid");
+            }
+            else{
+                return ResponseEntity.ok().build();
+            }
         }catch (Exception e) {
             return ResponseEntity.internalServerError().body(e);
         }
