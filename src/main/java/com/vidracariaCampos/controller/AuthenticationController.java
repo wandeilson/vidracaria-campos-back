@@ -21,7 +21,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO dto){
         try{
             var userNamePassword = new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
