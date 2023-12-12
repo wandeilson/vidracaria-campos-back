@@ -1,5 +1,6 @@
 package com.vidracariaCampos.entity;
 
+import com.vidracariaCampos.enums.CustomerType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,20 +17,18 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;
-    private String name; // nome
+    private String name;
     @Column(name = "customer_type")
-    private String customerType; // tipoCliente/ENUM
-    private String cpf_cnpj; // CPF/CNPJ
-    private String email; // email
-    private String phone; // telefone
-    private String address; // logradouro
-    @Column(name = "zip_code")
-    private String zipCode; // CEP
-    private String number; // numero
-    private String city; // cidade
-    private String state; // estado
-    private String landmark; // pontoDeReferencia
+    private CustomerType customerType;
+    private String cpfcnpj;
+    private String email;
+    private String phone;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "zipCode", column = @Column(name = "zip_code"))
+    })
+    private Address address;
     @Column(name = "registration_date")
-    private LocalDateTime registrationDate; // dataCriacao
+    private LocalDateTime registrationDate;
 
 }

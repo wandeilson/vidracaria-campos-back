@@ -33,4 +33,12 @@ public class CustomerService {
     public void delete(Customer customer) {
         customerRepositoty.delete(customer);
     }
+
+    public boolean existsByEmail(String email){
+        return customerRepositoty.existsByEmail(email);
+    }
+
+    public boolean existsByCpf_cnpj(String cpf_cnpj){
+        return customerRepositoty.existsByCpfcnpj(cpf_cnpj);
+    }
 }
