@@ -2,11 +2,10 @@ package com.vidracariaCampos.dto;
 
 import com.vidracariaCampos.entity.Address;
 import com.vidracariaCampos.enums.CustomerType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public record CustomerDTO(
         @NotBlank(message = "Name cannot be blank")
@@ -16,6 +15,8 @@ public record CustomerDTO(
         String cpfcnpj,
         @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
         String email,
+        @NotBlank
+        @Size(min = 10, message = "Phone must contain as least 10 characters")
         String phone,
         Address address
 

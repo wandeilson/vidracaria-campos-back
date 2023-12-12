@@ -3,12 +3,13 @@ package com.vidracariaCampos.controller;
 import com.vidracariaCampos.dto.CustomerDTO;
 import com.vidracariaCampos.entity.Customer;
 import com.vidracariaCampos.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
