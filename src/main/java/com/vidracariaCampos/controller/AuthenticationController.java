@@ -21,22 +21,26 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO dto){
         try{
             var userNamePassword = new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
             var auth = authenticationManager.authenticate(userNamePassword);
             var token = tokenService.generateToken((User) auth.getPrincipal());
             return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body("Email or Password invalid");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e);
         }
     }
-    @PostMapping("/validToken/{token}")
-    public ResponseEntity validToken(@PathVariable String token){
+    @PostMapping("/is-valid-token")
+    public ResponseEntity isValidToken(@RequestParam String token){
         try{
-            if(tokenService.isValidToken(token) == false) return ResponseEntity.badRequest().body("token invalid");
-            else return ResponseEntity.ok().build();
+            if(tokenService.isValidToken(token) == false) {
+                return ResponseEntity.badRequest().body("token invalid");
+            }
+            else{
+                return ResponseEntity.ok().build();
+            }
         }catch (Exception e) {
             return ResponseEntity.internalServerError().body(e);
         }

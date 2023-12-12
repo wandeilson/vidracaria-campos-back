@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
+
 @Service
 public class TokenService {
 
@@ -50,13 +52,28 @@ public class TokenService {
     public boolean isValidToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            JWT.require(algorithm)
+           var teste = JWT.require(algorithm)
                     .withIssuer("auth-api")
                     .build()
                     .verify(token);
+           System.out.println(teste);
             return true;
         } catch (JWTVerificationException e) {
             return false;
+        }
+    }
+
+    public Long getUserIdFromToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token)
+                    .getClaim("userId")
+                    .asLong();
+        } catch (JWTVerificationException e) {
+            return null;
         }
     }
 }
