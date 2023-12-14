@@ -94,4 +94,10 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body("Customer deleted successfully.");
 
     }
+
+    @GetMapping("/search")
+    public List<Customer> searchCustomers(@RequestParam String search) {
+        return customerService.searchCustomers(search);
+    }
+
 }

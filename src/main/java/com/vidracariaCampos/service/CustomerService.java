@@ -41,4 +41,8 @@ public class CustomerService {
     public boolean existsByCpf_cnpj(String cpf_cnpj){
         return customerRepositoty.existsByCpfcnpj(cpf_cnpj);
     }
+
+    public List<Customer> searchCustomers(String search){
+        return customerRepositoty.searchCustomer(search.toLowerCase());
+    }
 }
