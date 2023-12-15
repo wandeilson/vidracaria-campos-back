@@ -23,8 +23,8 @@ public class CustomerController {
     public CustomerController(CustomerService customerService){
         this.customerService = customerService;
     }
-    @PostMapping
-    public ResponseEntity<Object> create (@RequestBody @Valid CustomerDTO customerDTO){
+    @PostMapping("/createCustomer")
+    public ResponseEntity<Object> createCustomer(@RequestBody @Valid CustomerDTO customerDTO){
         if(customerDTO.email() != null){
             if(customerService.existsByEmail(customerDTO.email())){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Email is already in use!");
@@ -41,7 +41,7 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.save(customerEntity));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("updateCustomer/{id}")
     public ResponseEntity<Object> updateCustomer(@PathVariable (value = "id") UUID id,
                                                  @RequestBody @Valid CustomerDTO customerDTO){
         Optional<Customer> customerOptional = customerService.findById(id);
@@ -70,12 +70,12 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.save(customerEntity));
     }
 
-    @GetMapping()
+    @GetMapping("getAllCustomers")
     public ResponseEntity<List<Customer>> getAllCustomers(){
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("getCustomerById/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") UUID id){
         Optional<Customer> customerOptional = customerService.findById(id);
         if(!customerOptional.isPresent()) {
@@ -84,7 +84,7 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(customerOptional.get());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("deleteCustomerById/{id}")
     public ResponseEntity<Object> deleteCustomerById (@PathVariable (value = "id") UUID id){
         Optional<Customer> optionalCustomer = customerService.findById(id);
         if(!optionalCustomer.isPresent()){
@@ -95,8 +95,8 @@ public class CustomerController {
 
     }
 
-    @GetMapping("/search")
-    public List<Customer> searchCustomers(@RequestParam String search) {
+    @PostMapping("searchCustomers/{search}")
+    public List<Customer> searchCustomers(@PathVariable (value = "search") String search) {
         return customerService.searchCustomers(search);
     }
 
