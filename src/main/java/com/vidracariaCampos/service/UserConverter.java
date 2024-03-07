@@ -2,7 +2,7 @@ package com.vidracariaCampos.service;
 
 import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.entity.User;
-import com.vidracariaCampos.model.entity.Role;
+import com.vidracariaCampos.model.enums.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
