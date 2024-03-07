@@ -1,10 +1,9 @@
 package com.vidracariaCampos.service;
 
-import com.vidracariaCampos.dto.UserDTO;
-import com.vidracariaCampos.entity.User;
-import com.vidracariaCampos.entity.Role;
+import com.vidracariaCampos.model.dto.UserDTO;
+import com.vidracariaCampos.model.entity.User;
+import com.vidracariaCampos.model.entity.Role;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
