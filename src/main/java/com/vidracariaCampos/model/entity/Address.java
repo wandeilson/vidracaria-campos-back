@@ -1,4 +1,4 @@
-package com.vidracariaCampos.entity;
+package com.vidracariaCampos.model.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.Data;

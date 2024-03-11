@@ -1,6 +1,6 @@
 package com.vidracariaCampos.controller;
 
-import com.vidracariaCampos.dto.UserDTO;
+import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.service.UserService;
 import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity create(@RequestBody @Valid UserDTO userDTO) {
         try {
 
@@ -28,7 +28,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity find(@PathVariable UUID id) {
@@ -51,13 +50,13 @@ public class UserController {
     }
 
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity< List<UserDTO>>findAll(){
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok().body(users);
     }
 
-    @PutMapping("/update")
+    @PutMapping()
     public ResponseEntity update(@RequestBody @Valid UserDTO userDTO){
         try {
             userService.update(userDTO);

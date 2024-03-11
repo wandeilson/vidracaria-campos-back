@@ -1,10 +1,10 @@
-package com.vidracariaCampos.entity;
+package com.vidracariaCampos.model.entity;
 
+import com.vidracariaCampos.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,7 +47,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role == Role.ADMIN ?
+        return role.equals(Role.ADMIN)?
                 List.of(new SimpleGrantedAuthority("ADMIN"),new SimpleGrantedAuthority("DEFAULT"))
                 : List.of(new SimpleGrantedAuthority("DEFAULT"));
     }

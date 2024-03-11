@@ -1,4 +1,4 @@
-package com.vidracariaCampos.enums;
+package com.vidracariaCampos.model.enums;
 
 public enum CustomerType {
     FISICA,

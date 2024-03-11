@@ -1,7 +1,7 @@
 package com.vidracariaCampos.controller;
 
-import com.vidracariaCampos.dto.CustomerDTO;
-import com.vidracariaCampos.entity.Customer;
+import com.vidracariaCampos.model.dto.CustomerDTO;
+import com.vidracariaCampos.model.entity.Customer;
 import com.vidracariaCampos.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +23,8 @@ public class CustomerController {
     public CustomerController(CustomerService customerService){
         this.customerService = customerService;
     }
-    @PostMapping("/createCustomer")
+
+    @PostMapping()
     public ResponseEntity<Object> createCustomer(@RequestBody @Valid CustomerDTO customerDTO){
         if(customerDTO.email() != null){
             if(customerService.existsByEmail(customerDTO.email())){
@@ -41,7 +42,7 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.save(customerEntity));
     }
 
-    @PutMapping("updateCustomer/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateCustomer(@PathVariable (value = "id") UUID id,
                                                  @RequestBody @Valid CustomerDTO customerDTO){
         Optional<Customer> customerOptional = customerService.findById(id);
@@ -70,12 +71,12 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.save(customerEntity));
     }
 
-    @GetMapping("getAllCustomers")
+    @GetMapping()
     public ResponseEntity<List<Customer>> getAllCustomers(){
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
-    @GetMapping("getCustomerById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") UUID id){
         Optional<Customer> customerOptional = customerService.findById(id);
         if(!customerOptional.isPresent()) {
@@ -84,7 +85,7 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(customerOptional.get());
     }
 
-    @DeleteMapping("deleteCustomerById/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomerById (@PathVariable (value = "id") UUID id){
         Optional<Customer> optionalCustomer = customerService.findById(id);
         if(!optionalCustomer.isPresent()){
@@ -95,7 +96,7 @@ public class CustomerController {
 
     }
 
-    @PostMapping("searchCustomers/{search}")
+    @PostMapping("/{search}")
     public List<Customer> searchCustomers(@PathVariable (value = "search") String search) {
         return customerService.searchCustomers(search);
     }

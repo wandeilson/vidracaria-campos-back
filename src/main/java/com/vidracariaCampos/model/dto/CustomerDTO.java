@@ -1,7 +1,7 @@
-package com.vidracariaCampos.dto;
+package com.vidracariaCampos.model.dto;
 
-import com.vidracariaCampos.entity.Address;
-import com.vidracariaCampos.enums.CustomerType;
+import com.vidracariaCampos.model.entity.Address;
+import com.vidracariaCampos.model.enums.CustomerType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

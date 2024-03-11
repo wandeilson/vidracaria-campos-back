@@ -1,10 +1,9 @@
 package com.vidracariaCampos.controller;
 
-import com.vidracariaCampos.dto.AuthenticationDTO;
-import com.vidracariaCampos.entity.User;
+import com.vidracariaCampos.model.dto.AuthenticationDTO;
+import com.vidracariaCampos.model.entity.User;
 import com.vidracariaCampos.securitService.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,28 +20,40 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
+    @PostMapping()
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO dto){
         try{
             var userNamePassword = new UsernamePasswordAuthenticationToken(dto.email(),dto.password());
             var auth = authenticationManager.authenticate(userNamePassword);
             var token = tokenService.generateToken((User) auth.getPrincipal());
-            return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
+            return ResponseEntity.ok(token);
         } catch (Exception e){
-            return ResponseEntity.badRequest().body(e);
+            System.out.println(e);
+            return ResponseEntity.badRequest().body("Login or Password invalid");
         }
     }
-    @PostMapping("/is-valid-token")
+
+    @PostMapping("/isValidToken")
     public ResponseEntity isValidToken(@RequestParam String token){
         try{
-            if(tokenService.isValidToken(token) == false) {
+            if(!tokenService.isValidToken(token)) {
                 return ResponseEntity.badRequest().body("token invalid");
             }
             else{
                 return ResponseEntity.ok().build();
             }
         }catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.internalServerError().body(e);
+        }
+    }
+    @PostMapping("/refreshToken")
+    public ResponseEntity tokenRefresh(@RequestParam String token){
+        try{
+            return ResponseEntity.ok(tokenService.genNewToken(token));
+        }catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

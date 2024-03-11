@@ -1,6 +1,6 @@
-package com.vidracariaCampos.repository;
+package com.vidracariaCampos.model.repository;
 
-import com.vidracariaCampos.entity.Customer;
+import com.vidracariaCampos.model.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,7 +1,7 @@
 package com.vidracariaCampos.service;
 
-import com.vidracariaCampos.entity.Customer;
-import com.vidracariaCampos.repository.CustomerRepositoty;
+import com.vidracariaCampos.model.entity.Customer;
+import com.vidracariaCampos.model.repository.CustomerRepositoty;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

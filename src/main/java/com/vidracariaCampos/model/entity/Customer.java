@@ -1,6 +1,6 @@
-package com.vidracariaCampos.entity;
+package com.vidracariaCampos.model.entity;
 
-import com.vidracariaCampos.enums.CustomerType;
+import com.vidracariaCampos.model.enums.CustomerType;
 import jakarta.persistence.*;
 import lombok.Data;
 
