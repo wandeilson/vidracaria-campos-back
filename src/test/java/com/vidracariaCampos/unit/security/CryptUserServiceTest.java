@@ -1,6 +1,6 @@
 package com.vidracariaCampos.unit.security;
 import com.vidracariaCampos.ConfigSpringTest;
-import com.vidracariaCampos.securitService.CryptService;
+import com.vidracariaCampos.security.CryptService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

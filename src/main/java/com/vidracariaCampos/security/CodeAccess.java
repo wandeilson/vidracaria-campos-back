@@ -1,4 +1,4 @@
-package com.vidracariaCampos.securitService;
+package com.vidracariaCampos.security;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
