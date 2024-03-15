@@ -1,4 +1,4 @@
-package com.vidracariaCampos.securitService;
+package com.vidracariaCampos.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

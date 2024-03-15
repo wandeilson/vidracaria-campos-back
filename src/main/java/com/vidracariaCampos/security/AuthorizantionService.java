@@ -1,4 +1,4 @@
-package com.vidracariaCampos.securitService;
+package com.vidracariaCampos.security;
 
 import com.vidracariaCampos.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

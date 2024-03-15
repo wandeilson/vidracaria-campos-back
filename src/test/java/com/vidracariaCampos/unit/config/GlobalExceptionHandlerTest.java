@@ -1,5 +1,5 @@
 package com.vidracariaCampos.unit.config;
-import com.vidracariaCampos.ConfigSpringTest;
+import com.vidracariaCampos.config.ConfigSpringTest;
 import com.vidracariaCampos.config.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GlobalExceptionHandlerTest extends ConfigSpringTest {
+public class GlobalExceptionHandlerTest implements ConfigSpringTest {
 
     private GlobalExceptionHandler globalExceptionHandler;
 
