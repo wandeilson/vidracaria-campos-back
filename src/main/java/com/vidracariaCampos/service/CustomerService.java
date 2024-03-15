@@ -18,6 +18,9 @@ public class CustomerService {
         this.customerRepositoty = customerRepositoty;
     }
     public Customer save(Customer customer) {
+        if(customerRepositoty.existsByCpfcnpj(customer.getCpfcnpj())){
+            throw new RuntimeException("Customer already exists");
+        }
         customer.setRegistrationDate(LocalDateTime.now());
         return customerRepositoty.save(customer);
     }
@@ -31,6 +34,7 @@ public class CustomerService {
     }
 
     public void delete(Customer customer) {
+        customerRepositoty.findById(customer.getId()).orElseThrow(() -> new IllegalArgumentException("customer not found"));
         customerRepositoty.delete(customer);
     }
 
