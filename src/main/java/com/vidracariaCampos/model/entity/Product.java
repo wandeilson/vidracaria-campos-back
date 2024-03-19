@@ -4,6 +4,8 @@ import com.vidracariaCampos.model.enums.UnitOfMeasure;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -22,8 +24,11 @@ public class Product {
     private float depth;
 
     @Enumerated(EnumType.STRING)
-    private UnitOfMeasure unit;
-    private float price;
+    @Column(name = "unit_of_measure")
+    private UnitOfMeasure unitOfMeasure;
+    private BigDecimal price;
     @Enumerated(EnumType.STRING)
     private Category category;
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
 }
