@@ -4,6 +4,7 @@ import com.vidracariaCampos.model.enums.Category;
 import com.vidracariaCampos.model.enums.UnitOfMeasure;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,9 +19,9 @@ public class ProductTest {
         float height = 10.5f;
         float width = 5.3f;
         float depth = 2.0f;
-        UnitOfMeasure unit = UnitOfMeasure.CENTIMETRO;
-        float price = 25.99f;
-        Category category = Category.TEMPERADO;
+        UnitOfMeasure unit = UnitOfMeasure.CENTIMETER;
+        BigDecimal price = new BigDecimal(25.99f);
+        Category category = Category.TEMPERED;
 
         Product product = new Product();
         product.setId(id);
@@ -28,7 +29,7 @@ public class ProductTest {
         product.setHeight(height);
         product.setWidth(width);
         product.setDepth(depth);
-        product.setUnit(unit);
+        product.setUnitOfMeasure(unit);
         product.setPrice(price);
         product.setCategory(category);
 
@@ -37,7 +38,7 @@ public class ProductTest {
         assertEquals(height, product.getHeight());
         assertEquals(width, product.getWidth());
         assertEquals(depth, product.getDepth());
-        assertEquals(unit, product.getUnit());
+        assertEquals(unit, product.getUnitOfMeasure());
         assertEquals(price, product.getPrice());
         assertEquals(category, product.getCategory());
     }
@@ -55,9 +56,9 @@ public class ProductTest {
         float height = 10.5f;
         float width = 5.3f;
         float depth = 2.0f;
-        UnitOfMeasure unit = UnitOfMeasure.CENTIMETRO;
-        float price = 25.99f;
-        Category category = Category.TEMPERADO;
+        UnitOfMeasure unit = UnitOfMeasure.CENTIMETER;
+        BigDecimal price = new BigDecimal(25.99f);
+        Category category = Category.TEMPERED;
 
         Product product = new Product();
         product.setId(id);
@@ -65,7 +66,7 @@ public class ProductTest {
         product.setHeight(height);
         product.setWidth(width);
         product.setDepth(depth);
-        product.setUnit(unit);
+        product.setUnitOfMeasure(unit);
         product.setPrice(price);
         product.setCategory(category);
 
@@ -80,9 +81,9 @@ public class ProductTest {
         float height = 10.5f;
         float width = 5.3f;
         float depth = 2.0f;
-        UnitOfMeasure unit = UnitOfMeasure.CENTIMETRO;
-        float price = 25.99f;
-        Category category = Category.TEMPERADO;
+        UnitOfMeasure unit = UnitOfMeasure.CENTIMETER;
+        BigDecimal price = new BigDecimal(25.99f);
+        Category category = Category.TEMPERED;
 
         Product product1 = new Product();
         product1.setId(id);
@@ -90,7 +91,7 @@ public class ProductTest {
         product1.setHeight(height);
         product1.setWidth(width);
         product1.setDepth(depth);
-        product1.setUnit(unit);
+        product1.setUnitOfMeasure(unit);
         product1.setPrice(price);
         product1.setCategory(category);
 
@@ -100,7 +101,7 @@ public class ProductTest {
         product2.setHeight(height);
         product2.setWidth(width);
         product2.setDepth(depth);
-        product2.setUnit(unit);
+        product2.setUnitOfMeasure(unit);
         product2.setPrice(price);
         product2.setCategory(category);
 
@@ -114,9 +115,9 @@ public class ProductTest {
         float height = 10.5f;
         float width = 5.3f;
         float depth = 2.0f;
-        UnitOfMeasure unit = UnitOfMeasure.CENTIMETRO;
-        float price = 25.99f;
-        Category category = Category.TEMPERADO;
+        UnitOfMeasure unit = UnitOfMeasure.CENTIMETER;
+        BigDecimal price = new BigDecimal(25.99f);
+        Category category = Category.TEMPERED;
 
         Product product1 = new Product();
         product1.setId(id);
@@ -124,7 +125,7 @@ public class ProductTest {
         product1.setHeight(height);
         product1.setWidth(width);
         product1.setDepth(depth);
-        product1.setUnit(unit);
+        product1.setUnitOfMeasure(unit);
         product1.setPrice(price);
         product1.setCategory(category);
 
@@ -134,7 +135,7 @@ public class ProductTest {
         product2.setHeight(height);
         product2.setWidth(width);
         product2.setDepth(depth);
-        product2.setUnit(unit);
+        product2.setUnitOfMeasure(unit);
         product2.setPrice(price);
         product2.setCategory(category);
 
