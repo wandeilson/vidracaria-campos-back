@@ -37,23 +37,27 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateProduct(@PathVariable (value = "id") UUID id, @RequestBody @Valid
     ProductUpdateDTO productUpdateDTO){
+        Product productUpdated;
         if(!productService.existsById(id)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
-        }else {
+        }else{
             var productOptional  = productService.getById(id);
             Product productEntity = productOptional.orElseThrow();
-            //productService.deleteProductById(productEntity.getId());
-            //falta terminar esse if
-            if(productService.existsByName(productUpdateDTO.name())){
+            if(productEntity.getName().equals(productUpdateDTO.name())){
+                productUpdated = productService.convertToProduct(productUpdateDTO);
+                productUpdated.setId(productEntity.getId());
+                productUpdated.setRegistrationDate(productEntity.getRegistrationDate());
+            } else if (productService.existsByName(productUpdateDTO.name())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Name is already in use!");
+            } else {
+                productUpdated = productService.convertToProduct(productUpdateDTO);
+                productUpdated.setId(productEntity.getId());
+                productUpdated.setRegistrationDate(productEntity.getRegistrationDate());
             }
-            Product productUpdated = productService.convertToProduct(productUpdateDTO);
-            productUpdated.setId(productEntity.getId());
-
             return ResponseEntity.status(HttpStatus.OK).body(productService.update(productUpdated));
-            }
-
         }
+
+    }
 
 
     @GetMapping
