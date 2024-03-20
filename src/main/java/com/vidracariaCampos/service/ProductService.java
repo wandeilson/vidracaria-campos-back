@@ -1,12 +1,16 @@
 package com.vidracariaCampos.service;
 
-import com.vidracariaCampos.model.dto.ProductPOSTDTO;
-import com.vidracariaCampos.model.dto.ProductPUTDTO;
+import com.vidracariaCampos.model.dto.ProductCreateDTO;
+import com.vidracariaCampos.model.dto.ProductResponseDTO;
+import com.vidracariaCampos.model.dto.ProductUpdateDTO;
 import com.vidracariaCampos.model.entity.Product;
 import com.vidracariaCampos.model.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,22 +23,22 @@ public class ProductService {
     }
 
 
-    public ProductPOSTDTO save(Product productEntity) {
-      return convertToProductDTO(productRepository.save(productEntity));
+    public ProductCreateDTO save(Product productEntity) {
+      return convertToProductCreateDTO(productRepository.save(productEntity));
     }
 
-    public ProductPUTDTO update(Product productEntity) {
-        return convertToProductPUTDTO(productRepository.save(productEntity));
+    public ProductResponseDTO update(Product productEntity) {
+        return convertToProductResponseDTO(productRepository.save(productEntity));
     }
 
-    public ProductPOSTDTO convertToProductDTO(Product product){
-        return new ProductPOSTDTO(product.getName(),
+    public ProductCreateDTO convertToProductCreateDTO(Product product){
+        return new ProductCreateDTO(product.getName(),
                 product.getUnitOfMeasure(),
                 product.getCategory());
     }
 
-    public ProductPUTDTO convertToProductPUTDTO(Product product){
-        return new ProductPUTDTO(product.getName(),
+    public ProductUpdateDTO convertToProductUpdateDTO(Product product){
+        return new ProductUpdateDTO(product.getName(),
                 product.getUnitOfMeasure(),
                 product.getCategory(),
                 product.getHeight(),
@@ -43,9 +47,21 @@ public class ProductService {
                 product.getPrice());
     }
 
-    public Product convertToProduct(Object productPOSTDTO){
+    public ProductResponseDTO convertToProductResponseDTO(Product product){
+        return new ProductResponseDTO(product.getName(),
+                product.getUnitOfMeasure(),
+                product.getCategory(),
+                product.getHeight(),
+                product.getWidth(),
+                product.getDepth(),
+                product.getPrice(),
+                product.getRegistrationDate()
+        );
+    }
+
+    public Product convertToProduct(Object productDTO){
        var productEntity = new Product();
-       BeanUtils.copyProperties(productPOSTDTO, productEntity);
+       BeanUtils.copyProperties(productDTO, productEntity);
         return productEntity;
     }
 
@@ -55,5 +71,23 @@ public class ProductService {
 
     public boolean existsById(UUID id) {
         return productRepository.existsById(id);
+    }
+
+    public List<ProductResponseDTO> getAllProducts() {
+        var listAllProducts = productRepository.findAll();
+        List<ProductResponseDTO> listAllProductsResponseDTO = new ArrayList<>();
+        for (Product product: listAllProducts){
+            listAllProductsResponseDTO.add(convertToProductResponseDTO(product));
+        }
+        return listAllProductsResponseDTO;
+    }
+
+    public Optional<Product> getById(UUID id) {
+       return productRepository.findById(id);
+    }
+
+    public void deleteProductById(UUID id) {
+        productRepository.deleteById(id);
+
     }
 }

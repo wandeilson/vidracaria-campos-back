@@ -13,4 +13,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Override
     boolean existsById(UUID id);
+
 }
