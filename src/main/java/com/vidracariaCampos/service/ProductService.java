@@ -48,7 +48,9 @@ public class ProductService {
     }
 
     public ProductResponseDTO convertToProductResponseDTO(Product product){
-        return new ProductResponseDTO(product.getName(),
+        return new ProductResponseDTO(
+                product.getId(),
+                product.getName(),
                 product.getUnitOfMeasure(),
                 product.getCategory(),
                 product.getHeight(),
