@@ -25,12 +25,12 @@ public class CustomerService {
         return customerRepositoty.save(customer);
     }
 
-    public List<Customer> getAllCustomers() {
-        return customerRepositoty.findAll();
+    public List<Customer> getAllCustomers(UUID idUser) {
+        return customerRepositoty.findCustomersByUserId(idUser);
     }
 
-    public Optional<Customer> findById(UUID id) {
-        return customerRepositoty.findById(id);
+    public Optional<Customer> findById(UUID id, UUID idUser) {
+        return customerRepositoty.findByIdAndIdUser(id, idUser);
     }
 
     public void delete(Customer customer) {
@@ -44,6 +44,10 @@ public class CustomerService {
 
     public boolean existsByCpf_cnpj(String cpf_cnpj){
         return customerRepositoty.existsByCpfcnpj(cpf_cnpj);
+    }
+
+    public boolean existsByIdAndIdUser(UUID id, UUID idUser){
+        return customerRepositoty.existsByIdAndIdUser(id, idUser);
     }
 
     public List<Customer> searchCustomers(String search){

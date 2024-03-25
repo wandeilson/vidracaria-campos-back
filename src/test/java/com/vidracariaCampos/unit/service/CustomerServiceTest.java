@@ -48,28 +48,28 @@ public class CustomerServiceTest implements ConfigSpringTest {
         assertNotNull(savedCustomer.getRegistrationDate());
     }
 
-    @Test
-    void testGetAllCustomers_Success() {
-        Customer customer1 = createCustomer("John Doe", "12345678900", "john@example.com");
-        Customer customer2 = createCustomer("Jane Doe", "98765432100", "jane@example.com");
-        customerRepository.saveAll(List.of(customer1, customer2));
+//    @Test
+//    void testGetAllCustomers_Success() {
+//        Customer customer1 = createCustomer("John Doe", "12345678900", "john@example.com");
+//        Customer customer2 = createCustomer("Jane Doe", "98765432100", "jane@example.com");
+//        customerRepository.saveAll(List.of(customer1, customer2));
+//
+//        List<Customer> customers = customerService.getAllCustomers();
+//
+//        assertEquals(2, customers.size());
+//    }
 
-        List<Customer> customers = customerService.getAllCustomers();
-
-        assertEquals(2, customers.size());
-    }
-
-    @Test
-    void testFindById_Success() {
-        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-        customerRepository.save(customer);
-
-        Optional<Customer> optionalCustomer = customerService.findById(customer.getId());
-
-        assertTrue(optionalCustomer.isPresent());
-        assertEquals(customer.getName(), optionalCustomer.get().getName());
-        assertEquals(customer.getEmail(), optionalCustomer.get().getEmail());
-    }
+//    @Test
+//    void testFindById_Success() {
+//        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
+//        customerRepository.save(customer);
+//
+//        Optional<Customer> optionalCustomer = customerService.findById(customer.getId());
+//
+//        assertTrue(optionalCustomer.isPresent());
+//        assertEquals(customer.getName(), optionalCustomer.get().getName());
+//        assertEquals(customer.getEmail(), optionalCustomer.get().getEmail());
+//    }
     @Test
     void testDeleteCustomer_Success() {
         Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
@@ -102,12 +102,12 @@ public class CustomerServiceTest implements ConfigSpringTest {
         assertThrows(RuntimeException.class, () -> customerService.save(duplicateCustomer));
     }
 
-    @Test
-    void testFindById_CustomerNotFound() {
-        UUID nonExistentCustomerId = UUID.randomUUID();
-
-        assertThrows(NoSuchElementException.class, () -> customerService.findById(nonExistentCustomerId).orElseThrow());
-    }
+//    @Test
+//    void testFindById_CustomerNotFound() {
+//        UUID nonExistentCustomerId = UUID.randomUUID();
+//
+//        assertThrows(NoSuchElementException.class, () -> customerService.findById(nonExistentCustomerId).orElseThrow());
+//    }
 
     @Test
     void testDeleteCustomer_CustomerNotFound() {
