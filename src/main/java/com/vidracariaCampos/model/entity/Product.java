@@ -17,7 +17,8 @@ public class Product {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;
-
+    @Column(name = "id_user")
+    private UUID idUser;
     private String name;
     private float height;
     private float width;

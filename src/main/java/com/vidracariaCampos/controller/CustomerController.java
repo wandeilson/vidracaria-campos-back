@@ -39,14 +39,15 @@ public class CustomerController {
         var customerEntity = new Customer();
         BeanUtils.copyProperties(customerDTO, customerEntity);
         customerEntity.setRegistrationDate(LocalDateTime.now());
+        customerEntity.setIdUser(AuthenticationController.getUserLogged().getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.save(customerEntity));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateCustomer(@PathVariable (value = "id") UUID id,
                                                  @RequestBody @Valid CustomerDTO customerDTO){
-        Optional<Customer> customerOptional = customerService.findById(id);
-        if(!customerOptional.isPresent()) {
+        Optional<Customer> customerOptional = customerService.findById(id, AuthenticationController.getUserLogged().getId());
+        if(!customerService.existsByIdAndIdUser(id, AuthenticationController.getUserLogged().getId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
         }
         if(customerDTO.email() != null){
@@ -68,17 +69,18 @@ public class CustomerController {
         BeanUtils.copyProperties(customerDTO, customerEntity);
         customerEntity.setRegistrationDate(customerOptional.get().getRegistrationDate());
         customerEntity.setId(customerOptional.get().getId());
+        customerEntity.setIdUser(AuthenticationController.getUserLogged().getId());
         return ResponseEntity.status(HttpStatus.OK).body(customerService.save(customerEntity));
     }
 
     @GetMapping()
     public ResponseEntity<List<Customer>> getAllCustomers(){
-        return ResponseEntity.ok(customerService.getAllCustomers());
+        return ResponseEntity.ok(customerService.getAllCustomers(AuthenticationController.getUserLogged().getId()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") UUID id){
-        Optional<Customer> customerOptional = customerService.findById(id);
+        Optional<Customer> customerOptional = customerService.findById(id, AuthenticationController.getUserLogged().getId());
         if(!customerOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -87,7 +89,7 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomerById (@PathVariable (value = "id") UUID id){
-        Optional<Customer> optionalCustomer = customerService.findById(id);
+        Optional<Customer> optionalCustomer = customerService.findById(id, AuthenticationController.getUserLogged().getId());
         if(!optionalCustomer.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
         }

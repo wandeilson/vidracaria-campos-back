@@ -1,12 +1,14 @@
 package com.vidracariaCampos.model.repository;
 
 import com.vidracariaCampos.model.entity.Customer;
+import com.vidracariaCampos.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface CustomerRepositoty extends JpaRepository<Customer, UUID> {
@@ -28,7 +30,11 @@ public interface CustomerRepositoty extends JpaRepository<Customer, UUID> {
     )
     List<Customer> searchCustomer(@Param("search") String search);
 
+    @Query("SELECT c FROM Customer c WHERE c.idUser = :idUser")
+    List<Customer> findCustomersByUserId(@Param("idUser") UUID idUser);
+
+    boolean existsByIdAndIdUser(UUID id, UUID idUser);
 
 
-
+    Optional<Customer> findByIdAndIdUser(UUID id, UUID idUser);
 }

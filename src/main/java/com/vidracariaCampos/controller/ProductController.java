@@ -31,6 +31,7 @@ public class ProductController {
 
         var productEntity = productService.convertToProduct(productCreateDTO);
         productEntity.setRegistrationDate(LocalDateTime.now());
+        productEntity.setIdUser(AuthenticationController.getUserLogged().getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productEntity));
     }
 
@@ -38,7 +39,7 @@ public class ProductController {
     public ResponseEntity<Object> updateProduct(@PathVariable (value = "id") UUID id, @RequestBody @Valid
     ProductUpdateDTO productUpdateDTO){
         Product productUpdated;
-        if(!productService.existsById(id)){
+        if(!productService.existsById(id, AuthenticationController.getUserLogged().getId())){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }else{
             var productOptional  = productService.getById(id);
@@ -47,12 +48,14 @@ public class ProductController {
                 productUpdated = productService.convertToProduct(productUpdateDTO);
                 productUpdated.setId(productEntity.getId());
                 productUpdated.setRegistrationDate(productEntity.getRegistrationDate());
+                productUpdated.setIdUser(AuthenticationController.getUserLogged().getId());
             } else if (productService.existsByName(productUpdateDTO.name())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Name is already in use!");
             } else {
                 productUpdated = productService.convertToProduct(productUpdateDTO);
                 productUpdated.setId(productEntity.getId());
                 productUpdated.setRegistrationDate(productEntity.getRegistrationDate());
+                productUpdated.setIdUser(AuthenticationController.getUserLogged().getId());
             }
             return ResponseEntity.status(HttpStatus.OK).body(productService.update(productUpdated));
         }
@@ -62,22 +65,22 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>>  getAllProducts(){
-        return ResponseEntity.ok(productService.getAllProducts());
+        return ResponseEntity.ok(productService.getAllProducts(AuthenticationController.getUserLogged().getId()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object>  getProductById(@PathVariable (value = "id") UUID id){
-        if(!productService.existsById(id))
+        if(!productService.existsById(id, AuthenticationController.getUserLogged().getId()))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
         return ResponseEntity.status(HttpStatus.OK).body(productService.getById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteProductById (@PathVariable (value = "id") UUID id){
-        if(!productService.existsById(id))
+        if(!productService.existsById(id, AuthenticationController.getUserLogged().getId()))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
 
-        productService.deleteProductById(id);
+        productService.deleteProductById(id, AuthenticationController.getUserLogged().getId());
         return ResponseEntity.status(HttpStatus.OK).body("Customer deleted successfully.");
 
     }

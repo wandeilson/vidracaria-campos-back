@@ -17,6 +17,8 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;
+    @Column(name = "id_user")
+    private UUID idUser;
     private String name;
     @Column(name = "customer_type")
     private CustomerType customerType;

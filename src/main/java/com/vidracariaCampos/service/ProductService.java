@@ -71,12 +71,12 @@ public class ProductService {
         return productRepository.existsByName(name);
     }
 
-    public boolean existsById(UUID id) {
-        return productRepository.existsById(id);
+    public boolean existsById(UUID id, UUID idUser) {
+        return productRepository.existsByIdAndIdUser(id, idUser);
     }
 
-    public List<ProductResponseDTO> getAllProducts() {
-        var listAllProducts = productRepository.findAll();
+    public List<ProductResponseDTO> getAllProducts(UUID idUser) {
+        var listAllProducts = productRepository.findProductsByUserId(idUser);
         List<ProductResponseDTO> listAllProductsResponseDTO = new ArrayList<>();
         for (Product product: listAllProducts){
             listAllProductsResponseDTO.add(convertToProductResponseDTO(product));
@@ -88,8 +88,8 @@ public class ProductService {
        return productRepository.findById(id);
     }
 
-    public void deleteProductById(UUID id) {
-        productRepository.deleteById(id);
+    public void deleteProductById(UUID id, UUID idUser) {
+        productRepository.deleteByIdAndIdUser(id, idUser);
 
     }
 
