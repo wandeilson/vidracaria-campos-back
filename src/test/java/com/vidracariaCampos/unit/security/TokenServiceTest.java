@@ -1,7 +1,7 @@
 package com.vidracariaCampos.unit.security;
 import com.vidracariaCampos.config.ConfigSpringTest;
 import com.vidracariaCampos.model.entity.User;
-import com.vidracariaCampos.model.repository.UserRepository;
+import com.vidracariaCampos.repository.UserRepository;
 import com.vidracariaCampos.security.TokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

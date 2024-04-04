@@ -3,16 +3,13 @@ import com.vidracariaCampos.config.ConfigSpringTest;
 import com.vidracariaCampos.model.entity.Address;
 import com.vidracariaCampos.model.entity.Customer;
 import com.vidracariaCampos.model.enums.CustomerType;
-import com.vidracariaCampos.model.repository.CustomerRepositoty;
+import com.vidracariaCampos.repository.CustomerRepositoty;
 import com.vidracariaCampos.service.CustomerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
