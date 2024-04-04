@@ -2,9 +2,8 @@ package com.vidracariaCampos.controller;
 
 import com.vidracariaCampos.model.dto.AuthenticationDTO;
 import com.vidracariaCampos.model.entity.User;
-import com.vidracariaCampos.model.repository.UserRepository;
+import com.vidracariaCampos.repository.UserRepository;
 import com.vidracariaCampos.security.TokenService;
-import com.vidracariaCampos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

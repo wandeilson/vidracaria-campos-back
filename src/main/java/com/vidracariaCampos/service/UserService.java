@@ -3,7 +3,7 @@ package com.vidracariaCampos.service;
 import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.enums.Role;
 import com.vidracariaCampos.model.entity.User;
-import com.vidracariaCampos.model.repository.UserRepository;
+import com.vidracariaCampos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
