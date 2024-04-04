@@ -42,7 +42,7 @@ public class ProductController {
         if(!productService.existsById(id, AuthenticationController.getUserLogged().getId())){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }else{
-            var productOptional  = productService.getById(id);
+            var productOptional  = productService.getById(id, AuthenticationController.getUserLogged().getId());
             Product productEntity = productOptional.orElseThrow();
             if(productEntity.getName().equals(productUpdateDTO.name())){
                 productUpdated = productService.convertToProduct(productUpdateDTO);
@@ -72,7 +72,7 @@ public class ProductController {
     public ResponseEntity<Object>  getProductById(@PathVariable (value = "id") UUID id){
         if(!productService.existsById(id, AuthenticationController.getUserLogged().getId()))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getById(id, AuthenticationController.getUserLogged().getId()));
     }
 
     @DeleteMapping("/{id}")

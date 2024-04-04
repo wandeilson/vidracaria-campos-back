@@ -4,7 +4,7 @@ import com.vidracariaCampos.model.dto.ProductCreateDTO;
 import com.vidracariaCampos.model.dto.ProductResponseDTO;
 import com.vidracariaCampos.model.dto.ProductUpdateDTO;
 import com.vidracariaCampos.model.entity.Product;
-import com.vidracariaCampos.model.repository.ProductRepository;
+import com.vidracariaCampos.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -84,8 +84,8 @@ public class ProductService {
         return listAllProductsResponseDTO;
     }
 
-    public Optional<Product> getById(UUID id) {
-       return productRepository.findById(id);
+    public Optional<Product> getById(UUID id, UUID idUser) {
+       return productRepository.findByIdAndIdUser(id, idUser);
     }
 
     public void deleteProductById(UUID id, UUID idUser) {
