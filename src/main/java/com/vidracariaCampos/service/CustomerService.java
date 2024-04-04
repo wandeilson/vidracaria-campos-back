@@ -1,7 +1,7 @@
 package com.vidracariaCampos.service;
 
 import com.vidracariaCampos.model.entity.Customer;
-import com.vidracariaCampos.model.repository.CustomerRepositoty;
+import com.vidracariaCampos.repository.CustomerRepositoty;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,10 +18,11 @@ public class CustomerService {
         this.customerRepositoty = customerRepositoty;
     }
     public Customer save(Customer customer) {
-        if(customerRepositoty.existsByCpfcnpj(customer.getCpfcnpj())){
-            throw new RuntimeException("Customer already exists");
-        }
         customer.setRegistrationDate(LocalDateTime.now());
+        return customerRepositoty.save(customer);
+    }
+
+    public Customer updade(Customer customer){
         return customerRepositoty.save(customer);
     }
 
@@ -33,24 +34,20 @@ public class CustomerService {
         return customerRepositoty.findByIdAndIdUser(id, idUser);
     }
 
-    public void delete(Customer customer) {
-        customerRepositoty.findById(customer.getId()).orElseThrow(() -> new IllegalArgumentException("customer not found"));
-        customerRepositoty.delete(customer);
+    public void deleteById(UUID id, UUID idUser) {
+        customerRepositoty.deleteByIdAndIdUser(id, idUser);
     }
 
-    public boolean existsByEmail(String email){
-        return customerRepositoty.existsByEmail(email);
+    public boolean existsByEmail(String email, UUID idUser){
+        return customerRepositoty.existsByEmailAndIdUser(email, idUser);
     }
 
-    public boolean existsByCpf_cnpj(String cpf_cnpj){
-        return customerRepositoty.existsByCpfcnpj(cpf_cnpj);
+    public boolean existsByCpf_cnpj(String cpf_cnpj, UUID idUser){
+        return customerRepositoty.existsByCpfcnpjAndIdUser(cpf_cnpj, idUser);
     }
 
     public boolean existsByIdAndIdUser(UUID id, UUID idUser){
         return customerRepositoty.existsByIdAndIdUser(id, idUser);
     }
 
-    public List<Customer> searchCustomers(String search){
-        return customerRepositoty.searchCustomer(search.toLowerCase());
-    }
 }

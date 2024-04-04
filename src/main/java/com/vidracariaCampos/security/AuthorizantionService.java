@@ -1,6 +1,6 @@
 package com.vidracariaCampos.security;
 
-import com.vidracariaCampos.model.repository.UserRepository;
+import com.vidracariaCampos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

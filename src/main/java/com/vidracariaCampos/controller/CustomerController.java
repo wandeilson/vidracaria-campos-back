@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,39 +24,43 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseEntity<Object> createCustomer(@RequestBody @Valid CustomerDTO customerDTO){
+        UUID idUser = AuthenticationController.getUserLogged().getId();
         if(customerDTO.email() != null){
-            if(customerService.existsByEmail(customerDTO.email())){
+            if(customerService.existsByEmail(customerDTO.email(),idUser)){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Email is already in use!");
             }
         }
         if (customerDTO.cpfcnpj() != null){
-            if(customerService.existsByCpf_cnpj(customerDTO.cpfcnpj())){
+            if(customerService.existsByCpf_cnpj(customerDTO.cpfcnpj(), idUser)){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: CPF or CNPJ is already in use!");
             }
         }
         var customerEntity = new Customer();
         BeanUtils.copyProperties(customerDTO, customerEntity);
-        customerEntity.setRegistrationDate(LocalDateTime.now());
-        customerEntity.setIdUser(AuthenticationController.getUserLogged().getId());
+        customerEntity.setIdUser(idUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.save(customerEntity));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateCustomer(@PathVariable (value = "id") UUID id,
                                                  @RequestBody @Valid CustomerDTO customerDTO){
-        Optional<Customer> customerOptional = customerService.findById(id, AuthenticationController.getUserLogged().getId());
-        if(!customerService.existsByIdAndIdUser(id, AuthenticationController.getUserLogged().getId())) {
+        UUID idUser = AuthenticationController.getUserLogged().getId();
+        Optional<Customer> customerOptional;
+        if(!customerService.existsByIdAndIdUser(id, idUser)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
         }
-        if(customerDTO.email() != null){
-            if(customerService.existsByEmail(customerDTO.email())){
+        else{
+            customerOptional = customerService.findById(id, idUser);
+            if(customerService.existsByEmail(customerDTO.email(), idUser)){//Se ja existir um customer com esse email
+                /*Se o email já existe (if acima) e esse email do DTO NÃO é igual ao do customer que ele quer atualizar,
+                * quer dizer que já tem alguem usando esse email. */
                 if(!customerDTO.email().equals(customerOptional.get().getEmail())){
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Email is already in use!");
                 }
             }
         }
         if (customerDTO.cpfcnpj() != null){
-            if(customerService.existsByCpf_cnpj(customerDTO.cpfcnpj())){
+            if(customerService.existsByCpf_cnpj(customerDTO.cpfcnpj(), idUser)){
                 if(!customerDTO.cpfcnpj().equals(customerOptional.get().getCpfcnpj())){
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: CPF or CNPJ is already in use!");
                 }
@@ -69,8 +71,8 @@ public class CustomerController {
         BeanUtils.copyProperties(customerDTO, customerEntity);
         customerEntity.setRegistrationDate(customerOptional.get().getRegistrationDate());
         customerEntity.setId(customerOptional.get().getId());
-        customerEntity.setIdUser(AuthenticationController.getUserLogged().getId());
-        return ResponseEntity.status(HttpStatus.OK).body(customerService.save(customerEntity));
+        customerEntity.setIdUser(idUser);
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.updade(customerEntity));
     }
 
     @GetMapping()
@@ -79,28 +81,26 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable (value = "id") UUID id){
-        Optional<Customer> customerOptional = customerService.findById(id, AuthenticationController.getUserLogged().getId());
+    public ResponseEntity<Object> getCustomerById(@PathVariable (value = "id") UUID id){
+        UUID idUser = AuthenticationController.getUserLogged().getId();
+        Optional<Customer> customerOptional = customerService.findById(id, idUser);
         if(!customerOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
         }
         return ResponseEntity.status(HttpStatus.OK).body(customerOptional.get());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomerById (@PathVariable (value = "id") UUID id){
-        Optional<Customer> optionalCustomer = customerService.findById(id, AuthenticationController.getUserLogged().getId());
+        UUID idUser = AuthenticationController.getUserLogged().getId();
+        Optional<Customer> optionalCustomer = customerService.findById(id, idUser);
         if(!optionalCustomer.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
         }
-        customerService.delete(optionalCustomer.get());
+        customerService.deleteById(id, idUser);
         return ResponseEntity.status(HttpStatus.OK).body("Customer deleted successfully.");
 
     }
 
-    @PostMapping("/{search}")
-    public List<Customer> searchCustomers(@PathVariable (value = "search") String search) {
-        return customerService.searchCustomers(search);
-    }
 
 }

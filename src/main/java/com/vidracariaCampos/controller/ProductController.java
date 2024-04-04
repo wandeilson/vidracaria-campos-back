@@ -9,9 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -26,11 +25,11 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Object> createProduct(@RequestBody @Valid ProductCreateDTO productCreateDTO){
-        if(productService.existsByName(productCreateDTO.name()))
+        UUID idUser = AuthenticationController.getUserLogged().getId();
+        if(productService.existsByName(productCreateDTO.name(),idUser))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Name is already in use!");
 
         var productEntity = productService.convertToProduct(productCreateDTO);
-        productEntity.setRegistrationDate(LocalDateTime.now());
         productEntity.setIdUser(AuthenticationController.getUserLogged().getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productEntity));
     }
@@ -38,28 +37,24 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateProduct(@PathVariable (value = "id") UUID id, @RequestBody @Valid
     ProductUpdateDTO productUpdateDTO){
-        Product productUpdated;
-        if(!productService.existsById(id, AuthenticationController.getUserLogged().getId())){
+        UUID idUser = AuthenticationController.getUserLogged().getId();
+        Optional<Product> productOptional;
+        if(!productService.existsById(id, idUser)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
-        }else{
-            var productOptional  = productService.getById(id);
-            Product productEntity = productOptional.orElseThrow();
-            if(productEntity.getName().equals(productUpdateDTO.name())){
-                productUpdated = productService.convertToProduct(productUpdateDTO);
-                productUpdated.setId(productEntity.getId());
-                productUpdated.setRegistrationDate(productEntity.getRegistrationDate());
-                productUpdated.setIdUser(AuthenticationController.getUserLogged().getId());
-            } else if (productService.existsByName(productUpdateDTO.name())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Name is already in use!");
-            } else {
-                productUpdated = productService.convertToProduct(productUpdateDTO);
-                productUpdated.setId(productEntity.getId());
-                productUpdated.setRegistrationDate(productEntity.getRegistrationDate());
-                productUpdated.setIdUser(AuthenticationController.getUserLogged().getId());
+        }else {
+            productOptional = productService.getById(id, idUser);
+            if (productService.existsByName(productUpdateDTO.name(),idUser)){
+                if(!productUpdateDTO.name().equals(productOptional.get().getName())){
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Name is already in use!");
+                }
             }
-            return ResponseEntity.status(HttpStatus.OK).body(productService.update(productUpdated));
         }
-
+        Product productEntity = productService.convertToProduct(productUpdateDTO);
+        productEntity.setRegistrationDate(productOptional.get().getRegistrationDate());
+        productEntity.setId(productOptional.get().getId());
+        productEntity.setIdUser(productOptional.get().getIdUser());
+        return  ResponseEntity.ok(productService.update(productEntity));
+        
     }
 
 
@@ -71,17 +66,17 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<Object>  getProductById(@PathVariable (value = "id") UUID id){
         if(!productService.existsById(id, AuthenticationController.getUserLogged().getId()))
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getById(id));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getById(id, AuthenticationController.getUserLogged().getId()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteProductById (@PathVariable (value = "id") UUID id){
         if(!productService.existsById(id, AuthenticationController.getUserLogged().getId()))
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 
         productService.deleteProductById(id, AuthenticationController.getUserLogged().getId());
-        return ResponseEntity.status(HttpStatus.OK).body("Customer deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully.");
 
     }
 

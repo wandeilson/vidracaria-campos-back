@@ -4,7 +4,7 @@ import com.vidracariaCampos.config.ConfigSpringTest;
 import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.enums.Role;
 import com.vidracariaCampos.model.entity.User;
-import com.vidracariaCampos.model.repository.UserRepository;
+import com.vidracariaCampos.repository.UserRepository;
 import com.vidracariaCampos.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.vidracariaCampos.model.repository;
+package com.vidracariaCampos.repository;
 import com.vidracariaCampos.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
