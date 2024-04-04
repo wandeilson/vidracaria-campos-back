@@ -8,6 +8,7 @@ import com.vidracariaCampos.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class ProductService {
 
 
     public ProductCreateDTO save(Product productEntity) {
+        productEntity.setRegistrationDate(LocalDateTime.now());
       return convertToProductCreateDTO(productRepository.save(productEntity));
     }
 
@@ -34,7 +36,9 @@ public class ProductService {
     public ProductCreateDTO convertToProductCreateDTO(Product product){
         return new ProductCreateDTO(product.getName(),
                 product.getUnitOfMeasure(),
-                product.getCategory());
+                product.getCategory(),
+                product.getRegistrationDate()
+        );
     }
 
     public ProductUpdateDTO convertToProductUpdateDTO(Product product){
@@ -67,8 +71,8 @@ public class ProductService {
         return productEntity;
     }
 
-    public boolean existsByName(String name){
-        return productRepository.existsByName(name);
+    public boolean existsByName(String name, UUID idUser){
+        return productRepository.existsByNameAndIdUser(name, idUser);
     }
 
     public boolean existsById(UUID id, UUID idUser) {
