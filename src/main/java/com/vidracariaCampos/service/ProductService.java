@@ -26,50 +26,14 @@ public class ProductService {
 
     public ProductCreateDTO save(Product productEntity) {
         productEntity.setRegistrationDate(LocalDateTime.now());
-      return convertToProductCreateDTO(productRepository.save(productEntity));
+      return ProductConverter.convertToProductCreateDTO(productRepository.save(productEntity));
     }
 
     public ProductResponseDTO update(Product productEntity) {
-        return convertToProductResponseDTO(productRepository.save(productEntity));
+        return ProductConverter.convertToProductResponseDTO(productRepository.save(productEntity));
     }
 
-    public ProductCreateDTO convertToProductCreateDTO(Product product){
-        return new ProductCreateDTO(product.getName(),
-                product.getUnitOfMeasure(),
-                product.getCategory(),
-                product.getRegistrationDate()
-        );
-    }
 
-    public ProductUpdateDTO convertToProductUpdateDTO(Product product){
-        return new ProductUpdateDTO(product.getName(),
-                product.getUnitOfMeasure(),
-                product.getCategory(),
-                product.getHeight(),
-                product.getWidth(),
-                product.getDepth(),
-                product.getPrice());
-    }
-
-    public ProductResponseDTO convertToProductResponseDTO(Product product){
-        return new ProductResponseDTO(
-                product.getId(),
-                product.getName(),
-                product.getUnitOfMeasure(),
-                product.getCategory(),
-                product.getHeight(),
-                product.getWidth(),
-                product.getDepth(),
-                product.getPrice(),
-                product.getRegistrationDate()
-        );
-    }
-
-    public Product convertToProduct(Object productDTO){
-       var productEntity = new Product();
-       BeanUtils.copyProperties(productDTO, productEntity);
-        return productEntity;
-    }
 
     public boolean existsByName(String name, UUID idUser){
         return productRepository.existsByNameAndIdUser(name, idUser);
@@ -83,7 +47,7 @@ public class ProductService {
         var listAllProducts = productRepository.findProductsByUserId(idUser);
         List<ProductResponseDTO> listAllProductsResponseDTO = new ArrayList<>();
         for (Product product: listAllProducts){
-            listAllProductsResponseDTO.add(convertToProductResponseDTO(product));
+            listAllProductsResponseDTO.add(ProductConverter.convertToProductResponseDTO(product));
         }
         return listAllProductsResponseDTO;
     }
