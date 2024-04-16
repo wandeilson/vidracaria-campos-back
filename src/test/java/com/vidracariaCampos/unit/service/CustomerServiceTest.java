@@ -70,9 +70,9 @@ public class CustomerServiceTest implements ConfigSpringTest {
     @Test
     void testDeleteCustomer_Success() {
         Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-        customerRepository.save(customer);
+        customer = customerRepository.save(customer);
 
-        customerService.delete(customer);
+        customerService.deleteById(customer.getId());
 
         assertFalse(customerRepository.existsById(customer.getId()));
     }

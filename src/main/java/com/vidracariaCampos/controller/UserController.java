@@ -21,7 +21,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid UserDTO userDTO) {
         try {
-
             userService.saveUser(userDTO);
             return ResponseEntity.created(null).build();
         } catch (Exception e) {

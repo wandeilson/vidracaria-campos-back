@@ -4,8 +4,10 @@ import com.vidracariaCampos.model.dto.ProductCreateDTO;
 import com.vidracariaCampos.model.dto.ProductResponseDTO;
 import com.vidracariaCampos.model.dto.ProductUpdateDTO;
 import com.vidracariaCampos.model.entity.Product;
+import com.vidracariaCampos.service.ProductConverter;
 import com.vidracariaCampos.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,8 @@ import java.util.UUID;
 @RequestMapping("/products")
 public class ProductController {
 
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -29,7 +32,7 @@ public class ProductController {
         if(productService.existsByName(productCreateDTO.name(),idUser))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Name is already in use!");
 
-        var productEntity = productService.convertToProduct(productCreateDTO);
+        var productEntity = ProductConverter.convertToProduct(productCreateDTO);
         productEntity.setIdUser(AuthenticationController.getUserLogged().getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productEntity));
     }
@@ -49,7 +52,7 @@ public class ProductController {
                 }
             }
         }
-        Product productEntity = productService.convertToProduct(productUpdateDTO);
+        Product productEntity = ProductConverter.convertToProduct(productUpdateDTO);
         productEntity.setRegistrationDate(productOptional.get().getRegistrationDate());
         productEntity.setId(productOptional.get().getId());
         productEntity.setIdUser(productOptional.get().getIdUser());
