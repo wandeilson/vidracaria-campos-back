@@ -1,29 +1,53 @@
 package com.vidracariaCampos.unit.service;
+
 import com.vidracariaCampos.config.ConfigSpringTest;
+import com.vidracariaCampos.model.dto.CustomerDTO;
 import com.vidracariaCampos.model.entity.Address;
 import com.vidracariaCampos.model.entity.Customer;
+import com.vidracariaCampos.model.entity.User;
 import com.vidracariaCampos.model.enums.CustomerType;
+import com.vidracariaCampos.model.enums.Role;
 import com.vidracariaCampos.repository.CustomerRepositoty;
+import com.vidracariaCampos.repository.UserRepository;
 import com.vidracariaCampos.service.CustomerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerServiceTest implements ConfigSpringTest {
 
     @Autowired
     private CustomerRepositoty customerRepository;
-
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private CustomerService customerService;
+    private User user;
+    private CustomerDTO customerDTO;
+    private Customer savedCustomer;
 
     @BeforeEach
-    void setUp() {
-        customerService = new CustomerService(customerRepository);
+    void setUp() throws Exception {
+        customerRepository.deleteAll();
+
+        String email = "test@example.com";
+        user = new User(null, "Test User", "test@example.com", Role.ADMIN, "ADMIN");
+        user.setEmail(email);
+
+        user = (User) userRepository.save(user);
+
+        var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        customerDTO = createCustomerDTO(null,"John Doe", "12345678900", "john@example.com");
+        savedCustomer = customerService.save(customerDTO);
     }
 
     @AfterEach
@@ -32,12 +56,8 @@ public class CustomerServiceTest implements ConfigSpringTest {
     }
 
     @Test
+    @Order(1)
     void testSaveCustomer_Success() {
-        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-
-        Customer savedCustomer = customerService.save(customer);
-
-
         assertNotNull(savedCustomer.getId());
         assertEquals("John Doe", savedCustomer.getName());
         assertEquals("12345678900", savedCustomer.getCpfcnpj());
@@ -45,96 +65,70 @@ public class CustomerServiceTest implements ConfigSpringTest {
         assertNotNull(savedCustomer.getRegistrationDate());
     }
 
-//    @Test
-//    void testGetAllCustomers_Success() {
-//        Customer customer1 = createCustomer("John Doe", "12345678900", "john@example.com");
-//        Customer customer2 = createCustomer("Jane Doe", "98765432100", "jane@example.com");
-//        customerRepository.saveAll(List.of(customer1, customer2));
-//
-//        List<Customer> customers = customerService.getAllCustomers();
-//
-//        assertEquals(2, customers.size());
-//    }
-
-//    @Test
-//    void testFindById_Success() {
-//        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-//        customerRepository.save(customer);
-//
-//        Optional<Customer> optionalCustomer = customerService.findById(customer.getId());
-//
-//        assertTrue(optionalCustomer.isPresent());
-//        assertEquals(customer.getName(), optionalCustomer.get().getName());
-//        assertEquals(customer.getEmail(), optionalCustomer.get().getEmail());
-//    }
     @Test
-    void testDeleteCustomer_Success() {
-        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-        customer = customerRepository.save(customer);
-
-        customerService.deleteById(customer.getId());
-
-        assertFalse(customerRepository.existsById(customer.getId()));
+    @Order(2)
+    void testUpdateCustomer_Success() throws Exception {
+        customerDTO = createCustomerDTO(savedCustomer.getId(),"Jane",customerDTO.cpfcnpj(), customerDTO.email());
+        Customer updatedCustomer = customerService.update(customerDTO, savedCustomer.getId());
+        assertEquals("Jane", updatedCustomer.getName());
     }
 
     @Test
-    void testExistsByEmail_True() {
-        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-        customerRepository.save(customer);
-
-        assertTrue(customerService.existsByEmail("john@example.com"));
+    void testDeleteCustomer_Success() throws Exception {
+        customerService.deleteById(savedCustomer.getId());
+        assertFalse(customerRepository.existsById(savedCustomer.getId()));
     }
 
     @Test
-    void testExistsByEmail_False() {
-        assertFalse(customerService.existsByEmail("nonexistent@example.com"));
-    }
-    @Test
-    void testSaveCustomer_CustomerAlreadyExists() {
-        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-        customerRepository.save(customer);
-
-        Customer duplicateCustomer = createCustomer("John Doe", "12345678900", "duplicate@example.com");
-
-        assertThrows(RuntimeException.class, () -> customerService.save(duplicateCustomer));
-    }
-
-//    @Test
-//    void testFindById_CustomerNotFound() {
-//        UUID nonExistentCustomerId = UUID.randomUUID();
-//
-//        assertThrows(NoSuchElementException.class, () -> customerService.findById(nonExistentCustomerId).orElseThrow());
-//    }
-
-    @Test
-    void testDeleteCustomer_CustomerNotFound() {
-        UUID nonExistentCustomerId = UUID.randomUUID();
-        Customer nonExistentCustomer = new Customer();
-        nonExistentCustomer.setId(nonExistentCustomerId);
-
-        assertThrows(IllegalArgumentException.class, () -> customerService.delete(nonExistentCustomer));
+    void testVerifyEmail_Conflict() {
+        assertThrows(Exception.class, () -> customerService.verifyEmail("john@example.com", savedCustomer.getIdUser()));
     }
 
     @Test
-    void testExistsByEmail_CustomerExists() {
-        Customer customer = createCustomer("John Doe", "12345678900", "john@example.com");
-        customerRepository.save(customer);
-
-        assertTrue(customerService.existsByEmail("john@example.com"));
+    void testVerifyCpfCnpj_Conflict() {
+        assertThrows(Exception.class, () -> customerService.verifyCpfCnpj("12345678900", savedCustomer.getIdUser()));
+    }
+    @Test
+    void testUpdateCustomer_NotFound() {
+        UUID nonExistentId = UUID.randomUUID();
+        CustomerDTO updatedCustomerDTO = createCustomerDTO(null,"Jane", "12345678900", "jane@example.com");
+        assertThrows(Exception.class, () -> customerService.update(updatedCustomerDTO, nonExistentId));
     }
 
     @Test
-    void testExistsByEmail_CustomerNotExists() {
-        assertFalse(customerService.existsByEmail("nonexistent@example.com"));
+    void testDeleteCustomer_NotFound() {
+        UUID nonExistentId = UUID.randomUUID();
+        assertThrows(Exception.class, () -> customerService.deleteById(nonExistentId));
     }
-    private Customer createCustomer(String name, String cpfCnpj, String email) {
+
+    @Test
+    void testSaveCustomer_DuplicateEmail() {
+        CustomerDTO duplicateCustomerDTO = createCustomerDTO(null,"John", "12345678900", "john@example.com");
+        assertThrows(Exception.class, () -> customerService.save(duplicateCustomerDTO));
+    }
+
+    @Test
+    void testSaveCustomer_DuplicateCpfCnpj() {
+        CustomerDTO duplicateCustomerDTO = createCustomerDTO(null,"John", savedCustomer.getCpfcnpj(), "john@example.com");
+        assertThrows(Exception.class, () -> customerService.save(duplicateCustomerDTO));
+    }
+
+
+    private Customer createCustomer(CustomerDTO customerDTO) {
         Customer customer = new Customer();
-        customer.setName(name);
-        customer.setCpfcnpj(cpfCnpj);
-        customer.setEmail(email);
+        customer.setName(customerDTO.name());
+        customer.setCpfcnpj(customerDTO.cpfcnpj());
+        customer.setEmail(customerDTO.email());
         customer.setRegistrationDate(LocalDateTime.now());
         customer.setCustomerType(CustomerType.FISICA);
-        customer.setAddress(new Address());
         return customer;
     }
+
+    private CustomerDTO createCustomerDTO(UUID id,String name, String cpfCnpj, String email) {
+        CustomerDTO customerDTO = new CustomerDTO(id,name,CustomerType.FISICA,cpfCnpj,email,
+                new Address("dfgdf","esdfsdf","efdsdf","sdff","dfsdf","oisdufso"));
+
+        return customerDTO;
+    }
+
 }

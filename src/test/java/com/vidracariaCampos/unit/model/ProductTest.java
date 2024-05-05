@@ -49,30 +49,31 @@ public class ProductTest {
         assertNotNull(product);
     }
 
-//    @Test
-//    void testProductToString() {
-//        UUID id = UUID.randomUUID();
-//        String name = "Test Product";
-//        float height = 10.5f;
-//        float width = 5.3f;
-//        float depth = 2.0f;
-//        UnitOfMeasure unit = UnitOfMeasure.CENTIMETRO;
-//        BigDecimal price = new BigDecimal(25.99f);
-//        Category category = Category.TEMPERADO;
-//
-//        Product product = new Product();
-//        product.setId(id);
-//        product.setName(name);
-//        product.setHeight(height);
-//        product.setWidth(width);
-//        product.setDepth(depth);
-//        product.setUnitOfMeasure(unit);
-//        product.setPrice(price);
-//        product.setCategory(category);
-//
-//        String expectedToString = "Product(id=" + id + ", name=Test Product, height=10.5, width=5.3, depth=2.0, unit=CENTIMETRO, price=25.99, category=TEMPERADO)";
-//        assertEquals(expectedToString, product.toString());
-//    }
+    @Test
+    void testProductToString() {
+        UUID id = UUID.randomUUID();
+        String name = "Test Product";
+        float height = 10.5f;
+        float width = 5.3f;
+        float depth = 2.0f;
+        UnitOfMeasure unit = UnitOfMeasure.CENTIMETRO;
+        BigDecimal price = new BigDecimal(25.99f);
+        Category category = Category.TEMPERADO;
+
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setHeight(height);
+        product.setWidth(width);
+        product.setDepth(depth);
+        product.setUnitOfMeasure(unit);
+        product.setPrice(price);
+        product.setCategory(category);
+
+        String expectedToString = "Product(id="+id +", idUser=null, name=Test Product, height=10.5, width=5.3, depth=2.0, unitOfMeasure=CENTIMETRO, price=25.9899997711181640625, category=TEMPERADO, registrationDate=null)";
+        assertEquals(expectedToString, product.toString());
+    }
+
 
     @Test
     void testProductEquals() {
