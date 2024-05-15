@@ -12,6 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface CustomerRepositoty extends JpaRepository<Customer, UUID> {
+    boolean existsByEmail(String email);
+    boolean existsAllByCpfcnpj(String email);
+
+    boolean existsById (UUID id);
 
     boolean existsByEmailAndIdUser(String email, UUID idUser);
     boolean existsByCpfcnpjAndIdUser(String cpf_cnpj, UUID idUser);
