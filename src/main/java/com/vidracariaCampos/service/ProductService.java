@@ -4,6 +4,7 @@ import com.vidracariaCampos.model.dto.ProductCreateDTO;
 import com.vidracariaCampos.model.dto.ProductResponseDTO;
 import com.vidracariaCampos.model.dto.ProductUpdateDTO;
 import com.vidracariaCampos.model.entity.Product;
+import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.repository.ProductRepository;
 import com.vidracariaCampos.security.UserTolls;
 import org.springframework.beans.BeanUtils;
@@ -18,10 +19,12 @@ import java.util.UUID;
 public class ProductService {
 
     private ProductRepository productRepository;
+    private ProductStockService productStockService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductStockService productStockService ) {
         this.productRepository = productRepository;
+        this.productStockService = productStockService;
     }
 
     public ProductResponseDTO save(ProductCreateDTO productEntity) throws Exception {
@@ -29,7 +32,13 @@ public class ProductService {
         Product product = ProductConverter.convertToProduct(productEntity);
         product.setRegistrationDate(LocalDateTime.now());
         product.setIdUser(UserTolls.getUserContextId());
-      return ProductConverter.convertToProductResponseDTO(productRepository.save(product));
+
+        ProductResponseDTO productResponseDTO = ProductConverter.convertToProductResponseDTO(productRepository.save(product));
+
+        ProductStock productStock = new ProductStock();
+        productStock.setIdProduct(productResponseDTO.id());
+        productStockService.create(productStock);
+        return productResponseDTO;
     }
 
     public ProductResponseDTO update(ProductUpdateDTO productEntity, UUID id) throws Exception {

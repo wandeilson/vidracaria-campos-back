@@ -20,9 +20,9 @@ public class ProductStock {
     @Column(name = "id_product")
     private UUID idProduct;
     @Column(name = "actual_quantity")
-    private int actualQuantity;
+    private int actualQuantity = 0;
     @Column(name = "total_entries")
-    private int totalEntries;
+    private int totalEntries = 0;
     @Column(name = "total_exits")
-    private int totalExits;
+    private int totalExits = 0;
 }
