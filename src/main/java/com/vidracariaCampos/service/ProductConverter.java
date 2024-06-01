@@ -4,6 +4,7 @@ import com.vidracariaCampos.model.dto.ProductCreateDTO;
 import com.vidracariaCampos.model.dto.ProductResponseDTO;
 import com.vidracariaCampos.model.dto.ProductUpdateDTO;
 import com.vidracariaCampos.model.entity.Product;
+import com.vidracariaCampos.model.entity.ProductStock;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +38,26 @@ public  class ProductConverter {
                 product.getWidth(),
                 product.getDepth(),
                 product.getPrice(),
-                product.getRegistrationDate()
+                product.getRegistrationDate(),
+                0
         );
     }
+
+    public static ProductResponseDTO convertToProductResponseDTO(Product product, ProductStock productStock){
+        return new ProductResponseDTO(
+                product.getId(),
+                product.getName(),
+                product.getUnitOfMeasure(),
+                product.getCategory(),
+                product.getHeight(),
+                product.getWidth(),
+                product.getDepth(),
+                product.getPrice(),
+                product.getRegistrationDate(),
+                productStock.getActualQuantity()
+        );
+    }
+
 
     public static Product convertToProduct(Object productDTO){
         var productEntity = new Product();

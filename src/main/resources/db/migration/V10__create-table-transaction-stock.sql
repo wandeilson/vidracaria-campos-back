@@ -1,5 +1,5 @@
 CREATE TABLE transaction_stock (
-                                   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                   id UUID PRIMARY KEY,
                                    id_product UUID NOT NULL,
                                    transaction_type VARCHAR(50) NOT NULL,
                                    transaction_date TIMESTAMP,

@@ -4,7 +4,7 @@ import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.model.entity.Stock;
 import com.vidracariaCampos.model.entity.TransactionStock;
 import com.vidracariaCampos.model.enums.TransactionType;
-import com.vidracariaCampos.repository.StockRepositoty;
+import com.vidracariaCampos.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,17 +13,20 @@ import java.util.List;
 @Service
 public class StockService {
 
-    private StockRepositoty stockRepositoty;
-    private Stock stock = new Stock();
+    private final StockRepository stockRepository;
+    private Stock stock;
 
-    public StockService(StockRepositoty stockRepositoty) {
-        this.stockRepositoty = stockRepositoty;
-        stockRepositoty.save(stock);
+    public StockService(StockRepository stockRepository) {
+        this.stockRepository = stockRepository;
+        if(stockRepository.findAll().isEmpty()) {
+            stock = new Stock();
+            stockRepository.save(stock);
+        }
     }
 
 
     public Stock getStock() {
-        return this.stock = stockRepositoty.findAll().get(0);
+        return this.stock = stockRepository.findAll().get(0);
     }
 
     public void performTransaction(TransactionStock transactionStock) {
@@ -40,15 +43,18 @@ public class StockService {
                         break;
                     case BAIXAESTOQUE:
                         break;
+
                 }
                 transactionStock.setTransactionDate(LocalDateTime.now());
             }
         }
+        stockRepository.save(this.stock);
 
     }
 
     public void addProductStock(ProductStock productStock) {
         getStock().getProductStockList().add(productStock);
-        stockRepositoty.save(this.stock);
+        stockRepository.save(this.stock);
     }
+
 }

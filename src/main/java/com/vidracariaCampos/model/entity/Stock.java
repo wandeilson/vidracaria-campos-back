@@ -16,6 +16,6 @@ public class Stock {
     @GeneratedValue(generator = "UUID")
     private UUID id;
     @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductStock> productStockList = new ArrayList<ProductStock>();
+    private List<ProductStock> productStockList;
 
 }

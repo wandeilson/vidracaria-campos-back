@@ -18,10 +18,14 @@ public class StockController {
         this.stockService = stockService;
     }
 
-    @PutMapping
+    @PutMapping("/receiveProduct")
     public ResponseEntity<Object> performTransaction(@RequestBody @Valid TransactionStock transactionStock) {
         stockService.performTransaction(transactionStock);
         return null;
+    }
+    @GetMapping
+    public ResponseEntity<Object> getStock(){
+        return ResponseEntity.ok(stockService.getStock());
     }
 
 }

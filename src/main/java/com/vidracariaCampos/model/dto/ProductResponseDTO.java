@@ -18,6 +18,7 @@ public record ProductResponseDTO(
         float width,
         float depth,
         BigDecimal price,
-        LocalDateTime registrationDate
+        LocalDateTime registrationDate,
+        int actualQuantity
 ) {
 }

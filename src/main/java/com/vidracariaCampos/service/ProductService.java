@@ -8,7 +8,6 @@ import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.repository.ProductRepository;
 import com.vidracariaCampos.security.UserTolls;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,10 +17,9 @@ import java.util.UUID;
 @Service
 public class ProductService {
 
-    private ProductRepository productRepository;
-    private ProductStockService productStockService;
+    private final ProductRepository productRepository;
+    private final ProductStockService productStockService;
 
-    @Autowired
     public ProductService(ProductRepository productRepository, ProductStockService productStockService ) {
         this.productRepository = productRepository;
         this.productStockService = productStockService;
@@ -55,9 +53,18 @@ public class ProductService {
         var listAllProducts = productRepository.findProductsByUserId(UserTolls.getUserContextId());
         List<ProductResponseDTO> listAllProductsResponseDTO = new ArrayList<>();
         for (Product product: listAllProducts){
-            listAllProductsResponseDTO.add(ProductConverter.convertToProductResponseDTO(product));
+            ProductResponseDTO productResponseDTO = ProductConverter.convertToProductResponseDTO(product);
+            listAllProductsResponseDTO.add(productResponseDTO);
         }
         return listAllProductsResponseDTO;
+    }
+
+    public void getAllProductsComQuantidade(Product product, ProductStock productStock){
+        List<Product> listProducts = productRepository.findAll();
+        List<ProductStock> listProductsStock = productStockService.getAllProductsStock();
+        for (int i = 0; i < productRepository.findAll().size(); i++){
+            //continua...
+        }
     }
 
     public Product getById(UUID id) throws Exception{
