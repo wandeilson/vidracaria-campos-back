@@ -12,12 +12,10 @@ public class ProductStockService {
 
     private final ProductStockRepository productStockRepository;
     private final StockService stockService;
-    private final StockRepository stockRepository;
 
     public ProductStockService(ProductStockRepository productStockRepository, StockService stockService, StockRepository stockRepository) {
         this.productStockRepository = productStockRepository;
         this.stockService = stockService;
-        this.stockRepository = stockRepository;
     }
 
     public void create(ProductStock productStock){

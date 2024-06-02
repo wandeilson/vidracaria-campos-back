@@ -14,10 +14,12 @@ import java.util.List;
 public class StockService {
 
     private final StockRepository stockRepository;
+    private final TransactionStockService transactionStockService;
     private Stock stock;
 
-    public StockService(StockRepository stockRepository) {
+    public StockService(StockRepository stockRepository,  TransactionStockService transactionStockService) {
         this.stockRepository = stockRepository;
+        this.transactionStockService = transactionStockService;
         if(stockRepository.findAll().isEmpty()) {
             stock = new Stock();
             stockRepository.save(stock);
@@ -29,7 +31,8 @@ public class StockService {
         return this.stock = stockRepository.findAll().get(0);
     }
 
-    public void performTransaction(TransactionStock transactionStock) {
+    public String performTransaction(TransactionStock transactionStock) {
+        String status = null;
         List<ProductStock> productStockList = getStock().getProductStockList();
         for(ProductStock productStock: productStockList){
             if(productStock.getIdProduct().equals(transactionStock.getIdProduct())){
@@ -38,6 +41,7 @@ public class StockService {
                     case ENTRADA:
                         int quantity = transactionStock.getMovementQuantity();
                         productStock.setActualQuantity(productStock.getActualQuantity() + quantity);
+                        status = "Entry successfully completed.";
                         break;
                     case SAIDA:
                         break;
@@ -46,9 +50,11 @@ public class StockService {
 
                 }
                 transactionStock.setTransactionDate(LocalDateTime.now());
+                transactionStockService.save(transactionStock);
             }
         }
         stockRepository.save(this.stock);
+        return status;
 
     }
 
