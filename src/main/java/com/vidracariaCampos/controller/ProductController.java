@@ -58,6 +58,23 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/productsWithQuantity")
+    public ResponseEntity<Object> getAllProductsWithQuantity(){
+        try {
+            return ResponseEntity.ok(productService.getAllProductsWithQuantity());
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+    @GetMapping("/productsOnlyWithName")
+    public ResponseEntity<Object> getAllProductsOnlyWithName(){
+        try {
+            return ResponseEntity.ok(productService.getAllProductsOnlyWithName());
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getProductById(@PathVariable (value = "id") UUID id){
         try {
