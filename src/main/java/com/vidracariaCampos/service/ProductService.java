@@ -1,8 +1,6 @@
 package com.vidracariaCampos.service;
 
-import com.vidracariaCampos.model.dto.ProductCreateDTO;
-import com.vidracariaCampos.model.dto.ProductResponseDTO;
-import com.vidracariaCampos.model.dto.ProductUpdateDTO;
+import com.vidracariaCampos.model.dto.*;
 import com.vidracariaCampos.model.entity.Product;
 import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.repository.ProductRepository;
@@ -59,12 +57,24 @@ public class ProductService {
         return listAllProductsResponseDTO;
     }
 
-    public void getAllProductsComQuantidade(Product product, ProductStock productStock){
+    public List<ProductWithQuantityDTO> getAllProductsWithQuantity(){
         List<Product> listProducts = productRepository.findAll();
         List<ProductStock> listProductsStock = productStockService.getAllProductsStock();
-        for (int i = 0; i < productRepository.findAll().size(); i++){
-            //continua...
+        List<ProductWithQuantityDTO> listProductWithQuantityDTO = new ArrayList<ProductWithQuantityDTO>();
+
+        for (Product product: listProducts){
+            listProductWithQuantityDTO.add(ProductConverter.convertToProductWithQuantityDTO(product));
         }
+        return ProductConverter.setActualQuantity(listProductWithQuantityDTO, listProductsStock);
+    }
+
+    public List<ProductOnlyWithNameDTO> getAllProductsOnlyWithName(){
+        List<ProductResponseDTO> listProductResponseDTO = getAllProducts();
+        List<ProductOnlyWithNameDTO> listProductOnlyWithNameDTO = new ArrayList<>();
+        for (ProductResponseDTO product: listProductResponseDTO){
+            listProductOnlyWithNameDTO.add(ProductConverter.convertToProductOnlyWithName(product));
+        }
+        return listProductOnlyWithNameDTO;
     }
 
     public Product getById(UUID id) throws Exception{
