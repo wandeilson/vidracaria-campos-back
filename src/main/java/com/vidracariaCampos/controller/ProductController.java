@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity createProduct(@RequestBody @Valid ProductCreateDTO productCreateDTO){
+    public ResponseEntity<Object> createProduct(@RequestBody @Valid ProductCreateDTO productCreateDTO){
         try {
             return ResponseEntity.created(null).body(productService.save(productCreateDTO));
         } catch (Exception e) {
@@ -53,6 +53,23 @@ public class ProductController {
     public ResponseEntity<Object> getAllProducts(){
         try {
             return ResponseEntity.ok(productService.getAllProducts());
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/productsWithQuantity")
+    public ResponseEntity<Object> getAllProductsWithQuantity(){
+        try {
+            return ResponseEntity.ok(productService.getAllProductsWithQuantity());
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+    @GetMapping("/productsOnlyWithName")
+    public ResponseEntity<Object> getAllProductsOnlyWithName(){
+        try {
+            return ResponseEntity.ok(productService.getAllProductsOnlyWithName());
         }catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }

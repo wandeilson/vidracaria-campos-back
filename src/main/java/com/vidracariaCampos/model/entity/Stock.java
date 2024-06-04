@@ -1,35 +1,21 @@
 package com.vidracariaCampos.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
-@Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
+@Table(name = "stock")
 public class Stock {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductStock> productStockList;
 
-    @OneToOne
-    private User userId;
-
-    @OneToMany
-    private Set<StockTransation> historicTransation;
-
-    @ElementCollection
-    @CollectionTable(name = "stock_products_mapping")
-    @MapKeyColumn(name = "product_id")
-    // Id do Produto / Quantidade
-    private Map<UUID,Integer> myProducts;
-
-    private int currentQtt;
-    private int outputQtt;
 }

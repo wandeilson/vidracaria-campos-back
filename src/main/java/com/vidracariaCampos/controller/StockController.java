@@ -1,13 +1,34 @@
 package com.vidracariaCampos.controller;
 
+import com.vidracariaCampos.model.entity.Stock;
+import com.vidracariaCampos.model.entity.TransactionStock;
 import com.vidracariaCampos.service.StockService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.awt.geom.GeneralPath;
 
 @RestController
 @RequestMapping("/stock")
 public class StockController {
-    @Autowired
-    private StockService stockService;
+
+    private final StockService stockService;
+    public StockController(StockService stockService){
+        this.stockService = stockService;
+    }
+
+    @PutMapping("/receiveProduct")
+    public ResponseEntity<Object> performTransaction(@RequestBody @Valid TransactionStock transactionStock) {
+        try {
+            return ResponseEntity.ok().body(stockService.performTransaction(transactionStock));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping
+    public ResponseEntity<Object> getStock(){
+        return ResponseEntity.ok(stockService.getStock());
+    }
+
 }

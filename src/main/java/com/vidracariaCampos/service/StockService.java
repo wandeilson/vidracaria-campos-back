@@ -1,34 +1,66 @@
 package com.vidracariaCampos.service;
+
+import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.model.entity.Stock;
+import com.vidracariaCampos.model.entity.TransactionStock;
+import com.vidracariaCampos.model.enums.TransactionType;
 import com.vidracariaCampos.repository.StockRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
-public class StockService{
+public class StockService {
 
-    @Autowired
-    private StockRepository stockRepository;
+    private final StockRepository stockRepository;
+    private final TransactionStockService transactionStockService;
+    private Stock stock;
 
-    public Stock createStock(Stock stock) {
-        return stockRepository.save(stock);
+    public StockService(StockRepository stockRepository,  TransactionStockService transactionStockService) {
+        this.stockRepository = stockRepository;
+        this.transactionStockService = transactionStockService;
+        if(stockRepository.findAll().isEmpty()) {
+            stock = new Stock();
+            stockRepository.save(stock);
+        }
     }
 
-    public Stock updateStock(UUID id, Stock updatedStock) {
-      return null;
-    }
-    public Optional<Stock> getStock(UUID id) {
-        return stockRepository.findById(id);
+
+    public Stock getStock() {
+        return this.stock = stockRepository.findAll().get(0);
     }
 
-    public List<Stock> getStock() {
-        return stockRepository.findAll();
+    public String performTransaction(TransactionStock transactionStock) {
+        String status = null;
+        List<ProductStock> productStockList = getStock().getProductStockList();
+        for(ProductStock productStock: productStockList){
+            if(productStock.getIdProduct().equals(transactionStock.getIdProduct())){
+                TransactionType transactionType = transactionStock.getTransactionType();
+                switch (transactionType){
+                    case ENTRADA:
+                        int quantity = transactionStock.getMovementQuantity();
+                        productStock.setActualQuantity(productStock.getActualQuantity() + quantity);
+                        status = "Entry successfully completed.";
+                        break;
+                    case SAIDA:
+                        break;
+                    case BAIXAESTOQUE:
+                        break;
+
+                }
+                transactionStock.setTransactionDate(LocalDateTime.now());
+                transactionStockService.save(transactionStock);
+            }
+        }
+        stockRepository.save(this.stock);
+        return status;
+
     }
 
-    public void deleteStock(UUID id) {
-        stockRepository.deleteById(id);
+    public void addProductStock(ProductStock productStock) {
+        getStock().getProductStockList().add(productStock);
+        stockRepository.save(this.stock);
     }
+
 }
