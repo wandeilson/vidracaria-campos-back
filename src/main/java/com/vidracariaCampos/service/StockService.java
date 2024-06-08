@@ -5,6 +5,7 @@ import com.vidracariaCampos.model.entity.Stock;
 import com.vidracariaCampos.model.entity.TransactionStock;
 import com.vidracariaCampos.model.enums.TransactionType;
 import com.vidracariaCampos.repository.StockRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,10 +14,11 @@ import java.util.List;
 @Service
 public class StockService {
 
-    private final StockRepository stockRepository;
-    private final TransactionStockService transactionStockService;
+    private StockRepository stockRepository;
+    private TransactionStockService transactionStockService;
     private Stock stock;
 
+    @Autowired
     public StockService(StockRepository stockRepository,  TransactionStockService transactionStockService) {
         this.stockRepository = stockRepository;
         this.transactionStockService = transactionStockService;

@@ -11,12 +11,15 @@ import com.vidracariaCampos.model.enums.UnitOfMeasure;
 import com.vidracariaCampos.repository.ProductRepository;
 import com.vidracariaCampos.repository.UserRepository;
 import com.vidracariaCampos.service.ProductService;
+import com.vidracariaCampos.service.ProductStockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,18 +28,20 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductServiceTest implements ConfigSpringTest {
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private ProductService productService;
     @Autowired
-    private UserRepository userRepository;
+    private ProductStockService productStockService;
     private User user;
     private ProductCreateDTO productCreateDTO;
 
     @BeforeEach
     void setUp() {
+
         productRepository.deleteAll();
 
         String email = "test@example.com";
@@ -47,16 +52,24 @@ public class ProductServiceTest implements ConfigSpringTest {
 
         var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         productCreateDTO = createDTO();
     }
+
     @Test
-    @Order(1)
+    @Order(0)
     void testSaveProduct_Success() throws Exception {
         ProductResponseDTO savedProductDTO = productService.save(productCreateDTO);
 
         assertNotNull(savedProductDTO.name());
         assertEquals(productCreateDTO.name(), savedProductDTO.name());
         assertNotNull(savedProductDTO.registrationDate());
+    }
+    @Test
+    @Order(1)
+    void testSaveStock_Success() throws Exception {
+        productService.save(productCreateDTO);
+        assertEquals(1, productStockService.getAllProductsStock().size());
     }
     @Test
     @Order(2)
@@ -161,6 +174,7 @@ public class ProductServiceTest implements ConfigSpringTest {
         UUID nonExistentId = UUID.randomUUID();
         assertThrows(Exception.class, () -> productService.deleteProductById(nonExistentId));
     }
+
     public ProductCreateDTO createDTO(){
         return  new ProductCreateDTO(
                 "Test Product",

@@ -1,4 +1,4 @@
-package com.vidracariaCampos.service;
+package com.vidracariaCampos.service.converter;
 
 import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.entity.User;

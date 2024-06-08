@@ -3,6 +3,7 @@ package com.vidracariaCampos.service;
 import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.repository.ProductStockRepository;
 import com.vidracariaCampos.repository.StockRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +11,10 @@ import java.util.List;
 @Service
 public class ProductStockService {
 
-    private final ProductStockRepository productStockRepository;
-    private final StockService stockService;
+    private ProductStockRepository productStockRepository;
+    private StockService stockService;
 
+    @Autowired
     public ProductStockService(ProductStockRepository productStockRepository, StockService stockService, StockRepository stockRepository) {
         this.productStockRepository = productStockRepository;
         this.stockService = stockService;

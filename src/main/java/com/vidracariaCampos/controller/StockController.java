@@ -1,13 +1,9 @@
 package com.vidracariaCampos.controller;
-
-import com.vidracariaCampos.model.entity.Stock;
 import com.vidracariaCampos.model.entity.TransactionStock;
 import com.vidracariaCampos.service.StockService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.geom.GeneralPath;
 
 @RestController
 @RequestMapping("/stock")

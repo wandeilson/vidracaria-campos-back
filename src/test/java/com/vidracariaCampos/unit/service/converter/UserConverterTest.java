@@ -1,11 +1,10 @@
-package com.vidracariaCampos.unit.service;
+package com.vidracariaCampos.unit.service.converter;
 import com.vidracariaCampos.config.ConfigSpringTest;
 import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.entity.User;
 import com.vidracariaCampos.model.enums.Role;
-import com.vidracariaCampos.service.UserConverter;
+import com.vidracariaCampos.service.converter.UserConverter;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
 
