@@ -5,7 +5,9 @@ import com.vidracariaCampos.model.entity.Product;
 import com.vidracariaCampos.model.entity.ProductStock;
 import com.vidracariaCampos.repository.ProductRepository;
 import com.vidracariaCampos.security.UserTolls;
+import com.vidracariaCampos.service.converter.ProductConverter;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,9 +17,10 @@ import java.util.UUID;
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
-    private final ProductStockService productStockService;
+    private ProductRepository productRepository;
+    private ProductStockService productStockService;
 
+    @Autowired
     public ProductService(ProductRepository productRepository, ProductStockService productStockService ) {
         this.productRepository = productRepository;
         this.productStockService = productStockService;

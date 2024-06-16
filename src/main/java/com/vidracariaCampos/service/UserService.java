@@ -4,6 +4,7 @@ import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.enums.Role;
 import com.vidracariaCampos.model.entity.User;
 import com.vidracariaCampos.repository.UserRepository;
+import com.vidracariaCampos.service.converter.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class UserService {
 
     private UserRepository userRepository;
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {

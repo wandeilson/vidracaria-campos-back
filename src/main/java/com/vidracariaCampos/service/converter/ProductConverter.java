@@ -1,4 +1,4 @@
-package com.vidracariaCampos.service;
+package com.vidracariaCampos.service.converter;
 
 import com.vidracariaCampos.model.dto.*;
 import com.vidracariaCampos.model.entity.Product;
@@ -42,7 +42,6 @@ public  class ProductConverter {
         );
 
     }
-
 
     public static Product convertToProduct(Object productDTO){
         var productEntity = new Product();
