@@ -16,8 +16,9 @@ public record CustomerDTO(
         String name,
         @NotNull(message = "Customer type cannot be blank")
         CustomerType customerType,
+        @Size(max = 20, message = "CPF/CNPJ not valid")
         String cpfcnpj,
-
+        String phone,
         String email,
         Address address
 
