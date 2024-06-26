@@ -67,8 +67,8 @@ public  class ProductConverter {
         return listProductWithQuantityDTO;
     }
 
-    public static ProductOnlyWithNameDTO convertToProductOnlyWithName(ProductResponseDTO productResponseDTO){
-        return new ProductOnlyWithNameDTO(productResponseDTO.id(), productResponseDTO.name());
+    public static ProductOnlyWithNameDTO convertToProductOnlyWithName(Product productResponseDTO){
+        return new ProductOnlyWithNameDTO(productResponseDTO.getId(), productResponseDTO.getName());
     }
 
 }

@@ -34,7 +34,7 @@ public class CustomerServiceTest implements ConfigSpringTest {
     private Customer savedCustomer;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         customerRepository.deleteAll();
 
         String email = "test@example.com";
@@ -67,14 +67,14 @@ public class CustomerServiceTest implements ConfigSpringTest {
 
     @Test
     @Order(2)
-    void testUpdateCustomer_Success() throws Exception {
+    void testUpdateCustomer_Success(){
         customerDTO = createCustomerDTO(savedCustomer.getId(),"Jane",customerDTO.cpfcnpj(), customerDTO.email());
         Customer updatedCustomer = customerService.update(customerDTO, savedCustomer.getId());
         assertEquals("Jane", updatedCustomer.getName());
     }
 
     @Test
-    void testDeleteCustomer_Success() throws Exception {
+    void testDeleteCustomer_Success(){
         customerService.deleteById(savedCustomer.getId());
         assertFalse(customerRepository.existsById(savedCustomer.getId()));
     }
@@ -114,21 +114,10 @@ public class CustomerServiceTest implements ConfigSpringTest {
     }
 
 
-    private Customer createCustomer(CustomerDTO customerDTO) {
-        Customer customer = new Customer();
-        customer.setName(customerDTO.name());
-        customer.setCpfcnpj(customerDTO.cpfcnpj());
-        customer.setEmail(customerDTO.email());
-        customer.setRegistrationDate(LocalDateTime.now());
-        customer.setCustomerType(CustomerType.FISICA);
-        return customer;
-    }
-
     private CustomerDTO createCustomerDTO(UUID id,String name, String cpfCnpj, String email) {
-        CustomerDTO customerDTO = new CustomerDTO(id,name,CustomerType.FISICA,cpfCnpj,email,
+        return  new CustomerDTO(id,name,CustomerType.FISICA,cpfCnpj,"238947562983",email,
                 new Address("dfgdf","esdfsdf","efdsdf","sdff","dfsdf","oisdufso"));
 
-        return customerDTO;
     }
 
 }

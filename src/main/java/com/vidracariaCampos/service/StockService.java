@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class StockService {
 
-    private StockRepository stockRepository;
-    private TransactionStockService transactionStockService;
+    private final StockRepository stockRepository;
+    private final TransactionStockService transactionStockService;
     private Stock stock;
 
     @Autowired
@@ -28,9 +28,9 @@ public class StockService {
         }
     }
 
-
     public Stock getStock() {
-        return this.stock = stockRepository.findAll().get(0);
+        this.stock = stockRepository.findAll().get(0);
+        return stock;
     }
 
     public String performTransaction(TransactionStock transactionStock) {

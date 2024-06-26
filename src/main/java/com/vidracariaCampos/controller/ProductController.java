@@ -1,10 +1,11 @@
 package com.vidracariaCampos.controller;
-
 import com.vidracariaCampos.model.dto.ProductCreateDTO;
 import com.vidracariaCampos.model.dto.ProductUpdateDTO;
 import com.vidracariaCampos.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,78 +24,34 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Object> createProduct(@RequestBody @Valid ProductCreateDTO productCreateDTO){
-        try {
-            return ResponseEntity.created(null).body(productService.save(productCreateDTO));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.created(null).body(productService.save(productCreateDTO));
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateProduct(@PathVariable (value = "id") UUID id, @RequestBody @Valid
     ProductUpdateDTO productUpdateDTO){
-        try {
-            return ResponseEntity.ok().body(productService.update(productUpdateDTO,id));
-        }catch (Exception e){
-
-            if(e.getMessage().equals("Product not found"))
-                return ResponseEntity.notFound().build();
-
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok().body(productService.update(productUpdateDTO,id));
     }
-
     @GetMapping
-    public ResponseEntity<Object> getAllProducts(){
-        try {
-            return ResponseEntity.ok(productService.getAllProducts());
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+    public ResponseEntity<Object> getAllProducts(   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                    @RequestParam(value = "size", defaultValue = "15") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
-
     @GetMapping("/productsWithQuantity")
     public ResponseEntity<Object> getAllProductsWithQuantity(){
-        try {
-            return ResponseEntity.ok(productService.getAllProductsWithQuantity());
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+        return ResponseEntity.ok(productService.getAllProductsWithQuantity());
     }
     @GetMapping("/productsOnlyWithName")
     public ResponseEntity<Object> getAllProductsOnlyWithName(){
-        try {
-            return ResponseEntity.ok(productService.getAllProductsOnlyWithName());
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+        return ResponseEntity.ok(productService.getAllProductsOnlyWithName());
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Object> getProductById(@PathVariable (value = "id") UUID id){
-        try {
-            return ResponseEntity.ok(productService.getById(id));
-        }catch (Exception e){
-
-            if(e.getMessage().equals("Product not found"))
-                return ResponseEntity.notFound().build();
-
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+        return ResponseEntity.ok(productService.getById(id));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteProductById (@PathVariable (value = "id") UUID id){
-        try {
-            productService.deleteProductById(id);
-            return ResponseEntity.ok("");
-        }catch (Exception e){
-
-            if(e.getMessage().equals("Product not found"))
-                return ResponseEntity.notFound().build();
-
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+        productService.deleteProductById(id);
+        return ResponseEntity.ok("");
     }
-
 }

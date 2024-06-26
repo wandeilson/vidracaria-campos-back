@@ -16,15 +16,6 @@ public class StockController {
 
     @PutMapping("/receiveProduct")
     public ResponseEntity<Object> performTransaction(@RequestBody @Valid TransactionStock transactionStock) {
-        try {
-            return ResponseEntity.ok().body(stockService.performTransaction(transactionStock));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok().body(stockService.performTransaction(transactionStock));
     }
-    @GetMapping
-    public ResponseEntity<Object> getStock(){
-        return ResponseEntity.ok(stockService.getStock());
-    }
-
 }

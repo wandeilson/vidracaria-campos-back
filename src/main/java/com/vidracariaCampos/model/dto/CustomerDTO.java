@@ -21,6 +21,5 @@ public record CustomerDTO(
         String phone,
         String email,
         Address address
-
 ) {
 }

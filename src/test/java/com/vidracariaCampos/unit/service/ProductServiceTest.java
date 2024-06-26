@@ -16,6 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -99,8 +101,9 @@ public class ProductServiceTest implements ConfigSpringTest {
 
         productService.save(new ProductCreateDTO("Product 1", UnitOfMeasure.METRO, Category.TEMPERADO, LocalDateTime.now()));
         productService.save(new ProductCreateDTO("Product 2", UnitOfMeasure.MILIMETRO, Category.COMUM, LocalDateTime.now()));
+        Pageable pageable = PageRequest.of(0, 15);
 
-        List<ProductResponseDTO> productList = productService.getAllProducts();
+        List<ProductResponseDTO> productList = productService.getAllProducts(pageable);
         assertEquals(2, productList.size());
     }
     @Test

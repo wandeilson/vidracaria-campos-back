@@ -1,5 +1,7 @@
 package com.vidracariaCampos.service;
 
+import com.vidracariaCampos.exception.ConflictException;
+import com.vidracariaCampos.exception.NotFoundException;
 import com.vidracariaCampos.model.dto.*;
 import com.vidracariaCampos.model.entity.Product;
 import com.vidracariaCampos.model.entity.ProductStock;
@@ -8,6 +10,7 @@ import com.vidracariaCampos.security.UserTolls;
 import com.vidracariaCampos.service.converter.ProductConverter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,8 +20,8 @@ import java.util.UUID;
 @Service
 public class ProductService {
 
-    private ProductRepository productRepository;
-    private ProductStockService productStockService;
+    private final ProductRepository productRepository;
+    private final ProductStockService productStockService;
 
     @Autowired
     public ProductService(ProductRepository productRepository, ProductStockService productStockService ) {
@@ -26,7 +29,7 @@ public class ProductService {
         this.productStockService = productStockService;
     }
 
-    public ProductResponseDTO save(ProductCreateDTO productEntity) throws Exception {
+    public ProductResponseDTO save(ProductCreateDTO productEntity){
         verifyName(productEntity.name());
         Product product = ProductConverter.convertToProduct(productEntity);
         product.setRegistrationDate(LocalDateTime.now());
@@ -40,7 +43,7 @@ public class ProductService {
         return productResponseDTO;
     }
 
-    public ProductResponseDTO update(ProductUpdateDTO productEntity, UUID id) throws Exception {
+    public ProductResponseDTO update(ProductUpdateDTO productEntity, UUID id){
         Product product = getById(id);
 
         if(!product.getName().equals(productEntity.name()))
@@ -50,8 +53,8 @@ public class ProductService {
         return ProductConverter.convertToProductResponseDTO(productRepository.save(product));
     }
 
-    public List<ProductResponseDTO> getAllProducts(){
-        var listAllProducts = productRepository.findProductsByUserId(UserTolls.getUserContextId());
+    public List<ProductResponseDTO> getAllProducts(Pageable pageable){
+        var listAllProducts = productRepository.findProductsByUserId(UserTolls.getUserContextId(), pageable);
         List<ProductResponseDTO> listAllProductsResponseDTO = new ArrayList<>();
         for (Product product: listAllProducts){
             ProductResponseDTO productResponseDTO = ProductConverter.convertToProductResponseDTO(product);
@@ -72,28 +75,28 @@ public class ProductService {
     }
 
     public List<ProductOnlyWithNameDTO> getAllProductsOnlyWithName(){
-        List<ProductResponseDTO> listProductResponseDTO = getAllProducts();
+        List<Product> listProductResponseDTO = productRepository.findProductsByUserId(UserTolls.getUserContextId());
         List<ProductOnlyWithNameDTO> listProductOnlyWithNameDTO = new ArrayList<>();
-        for (ProductResponseDTO product: listProductResponseDTO){
+        for (Product product: listProductResponseDTO){
             listProductOnlyWithNameDTO.add(ProductConverter.convertToProductOnlyWithName(product));
         }
         return listProductOnlyWithNameDTO;
     }
 
-    public Product getById(UUID id) throws Exception{
+    public Product getById(UUID id){
         return productRepository.findByIdAndIdUser(id, UserTolls.getUserContextId())
-                .orElseThrow(() -> new Exception("Product not found"));
+                .orElseThrow(() -> new NotFoundException("Product not found"));
     }
 
-    public void deleteProductById(UUID id) throws Exception{
+    public void deleteProductById(UUID id){
         getById(id);
         productRepository.deleteByIdAndIdUser(id, UserTolls.getUserContextId());
 
     }
 
-    public void verifyName(String name) throws Exception {
+    public void verifyName(String name){
         if (productRepository.existsByNameAndIdUser(name, UserTolls.getUserContextId())) {
-            throw new Exception("Conflict: Name is already in use!");
+            throw new ConflictException("Name is already in use!");
         }
     }
 

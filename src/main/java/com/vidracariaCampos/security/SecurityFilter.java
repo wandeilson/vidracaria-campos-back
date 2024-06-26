@@ -1,5 +1,7 @@
 package com.vidracariaCampos.security;
 
+import com.vidracariaCampos.exception.InternalErrorException;
+import com.vidracariaCampos.exception.NotFoundException;
 import com.vidracariaCampos.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,9 +37,9 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request,response);
         }catch (NullPointerException e) {
-            throw new RuntimeException("user not found");
+            throw new NotFoundException("user not found");
         }catch (Exception e){
-           throw new RuntimeException(e);
+           throw new InternalErrorException(e.getMessage());
         }
     }
 

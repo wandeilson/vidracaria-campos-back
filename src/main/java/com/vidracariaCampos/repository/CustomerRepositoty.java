@@ -1,6 +1,7 @@
 package com.vidracariaCampos.repository;
 
 import com.vidracariaCampos.model.entity.Customer;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,7 +22,7 @@ public interface CustomerRepositoty extends JpaRepository<Customer, UUID> {
     boolean existsByCpfcnpjAndIdUser(String cpf_cnpj, UUID idUser);
 
     @Query("SELECT c FROM Customer c WHERE c.idUser = :idUser")
-    List<Customer> findCustomersByUserId(@Param("idUser") UUID idUser);
+    List<Customer> findCustomersByUserId(@Param("idUser") UUID idUser, Pageable pageable);
 
     boolean existsByIdAndIdUser(UUID id, UUID idUser);
 

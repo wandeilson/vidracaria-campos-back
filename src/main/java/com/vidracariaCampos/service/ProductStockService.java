@@ -11,8 +11,8 @@ import java.util.List;
 @Service
 public class ProductStockService {
 
-    private ProductStockRepository productStockRepository;
-    private StockService stockService;
+    private final ProductStockRepository productStockRepository;
+    private final StockService stockService;
 
     @Autowired
     public ProductStockService(ProductStockRepository productStockRepository, StockService stockService, StockRepository stockRepository) {

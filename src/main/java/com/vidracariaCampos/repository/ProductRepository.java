@@ -2,6 +2,7 @@ package com.vidracariaCampos.repository;
 
 import com.vidracariaCampos.model.entity.Customer;
 import com.vidracariaCampos.model.entity.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,8 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     boolean existsByNameAndIdUser(String name, UUID idUser);
+    @Query("SELECT p FROM Product p WHERE p.idUser = :idUser")
+    List<Product> findProductsByUserId(@Param("idUser") UUID idUser, Pageable pageable);
     @Query("SELECT p FROM Product p WHERE p.idUser = :idUser")
     List<Product> findProductsByUserId(@Param("idUser") UUID idUser);
 

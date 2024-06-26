@@ -1,5 +1,7 @@
 package com.vidracariaCampos.service;
 
+import com.vidracariaCampos.exception.ConflictException;
+import com.vidracariaCampos.exception.NotFoundException;
 import com.vidracariaCampos.model.dto.UserDTO;
 import com.vidracariaCampos.model.enums.Role;
 import com.vidracariaCampos.model.entity.User;
@@ -35,16 +37,12 @@ public class UserService {
     public UserDTO getUserByEmail(String email) {
         User u = (User) userRepository.findByEmail(email);
         if(u == null){
-            throw new RuntimeException("User not found");
+            throw new NotFoundException("User not found");
         }
         return UserConverter.convertToUserDTO(u);
     }
     public UserDTO getUserById(UUID id) {
-        User u =  userRepository.findById(id).get();
-
-        if(u == null){
-            throw new RuntimeException("User not found");
-        }
+        User u =  userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
         return  UserConverter.convertToUserDTO(u);
     }
 
@@ -55,7 +53,7 @@ public class UserService {
 
     public void saveUser(UserDTO userDTO) {
        if(userRepository.findByEmail(userDTO.email()) != null){
-           throw new RuntimeException("User already exists");
+           throw new ConflictException("User already exists");
        }
 
         User newUser = UserConverter.convertToUser(userDTO);
@@ -65,21 +63,19 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.deleteById(id);
+       getUserById(id);
+       userRepository.deleteById(id);
     }
 
     public void update(UserDTO userDTO) {
-        User user =  userRepository.findById(userDTO.id()).get();
-        if(user == null){
-            throw new RuntimeException("User not found");
-        }
+        User user =  userRepository.findById(userDTO.id()).orElseThrow(() -> new NotFoundException("User not found"));
+
         if (userDTO.name() != null) { user.setName(userDTO.name());}
         if (userDTO.email() != null && !user.getEmail().equals(userDTO.email())) {
             if(userRepository.findByEmail(userDTO.email()) == null){
                 user.setEmail(userDTO.email());
             }else {
-                throw new RuntimeException("Email already found");
+                throw new ConflictException("Email already found");
             }
         }
         if (userDTO.password() != null) {user.setPassword(passwordEncoder.encode(userDTO.password()));}

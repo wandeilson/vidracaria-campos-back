@@ -1,5 +1,6 @@
 package com.vidracariaCampos.unit.security;
 import com.vidracariaCampos.config.ConfigSpringTest;
+import com.vidracariaCampos.model.dto.ResponseToken;
 import com.vidracariaCampos.model.entity.User;
 import com.vidracariaCampos.repository.UserRepository;
 import com.vidracariaCampos.security.TokenService;
@@ -23,47 +24,36 @@ public class TokenServiceTest implements ConfigSpringTest {
     @Transactional
     void testGenerateToken() {
         User user = createUser("test@example.com", "password");
-        String token = tokenService.generateToken(user);
+        ResponseToken token = tokenService.generateToken(user);
 
         assertNotNull(token);
-        assertTrue(token.contains("token"));
-        assertTrue(token.contains("tokenRefresh"));
+        assertFalse(token.token().isEmpty());
+        assertFalse(token.tokenRefresh().isEmpty());
     }
 
     @Test
     @Transactional
     void testValidateToken() {
         User user = createUser("test@example.com", "password");
-        String token = tokenService.generateToken(user);
-        assertEquals("", tokenService.validateToken(token));
+        ResponseToken token = tokenService.generateToken(user);
+        assertNotNull(tokenService.validateToken(token.token()));
     }
 
     @Test
     @Transactional
     void testIsValidToken() {
         User user = createUser("test@example.com", "password");
-        String tokenResponse = tokenService.generateToken(user);
+        ResponseToken tokenResponse = tokenService.generateToken(user);
 
-        int startIndex = tokenResponse.indexOf("\"token\":") + 9;
-        int endIndex = tokenResponse.indexOf("\",\"tokenRefresh\"");
-        String tokenWithoutRefresh = tokenResponse.substring(startIndex, endIndex);
-
-        assertNotNull(tokenWithoutRefresh);
-        assertTrue(tokenService.isValidToken(tokenWithoutRefresh));
+        assertTrue(tokenService.isValidToken(tokenResponse.token()));
     }
 
     @Test
     @Transactional
     void testGenNewToken() {
         User user = createUser("test@example.com", "password");
-        String tokenResponse = tokenService.generateToken(user);
-
-        String tokenDelimiter = "\",\"tokenRefresh\":\"";
-        int tokenDelimiterIndex = tokenResponse.indexOf(tokenDelimiter);
-        String token = tokenResponse.substring(10, tokenDelimiterIndex);
-        String refreshToken = tokenResponse.substring(tokenDelimiterIndex + tokenDelimiter.length(), tokenResponse.length() - 2); // Ignorando as últimas 2 caracteres ("}")
-
-        assertNotNull(refreshToken);
+        ResponseToken tokenResponse = tokenService.generateToken(user);
+        assertNotNull(tokenResponse.tokenRefresh(), tokenResponse.token());
     }
 
     @Test

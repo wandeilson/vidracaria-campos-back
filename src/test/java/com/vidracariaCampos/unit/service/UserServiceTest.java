@@ -9,6 +9,7 @@ import com.vidracariaCampos.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 import java.util.List;
@@ -81,13 +82,12 @@ public class UserServiceTest implements ConfigSpringTest {
 
     @Test
     void testSaveUser() {
-        UserDTO userDTO = new UserDTO(null, "Test User", "test@example.com", "password", "ADMIN");
+        UserDTO userDTO = new UserDTO(null, "testss@example.com","Test User",  "password", "ADMIN");
 
         userService.saveUser(userDTO);
 
-        User savedUser = (User) userRepository.findByEmail(userDTO.email());
-        assertNotNull(savedUser);
-        assertEquals(userDTO.email(), savedUser.getEmail());
+        UserDTO savedUser = userService.getUserByEmail(userDTO.email());
+        assertEquals(userDTO.email(), savedUser.email());
     }
 
     @Test
@@ -103,14 +103,12 @@ public class UserServiceTest implements ConfigSpringTest {
 
     @Test
     void testUpdate() {
-
         User user = new User(null, "Test User", "test@example.com", Role.ADMIN, "ADMIN");
         user.setName("Test User");
         user.setEmail("test@example.com");
         userRepository.save(user);
 
         UserDTO userDTO = new UserDTO(user.getId(), "Updated User", "updated@example.com", null, Role.ADMIN.name());
-
 
         userService.update(userDTO);
 

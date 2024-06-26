@@ -5,6 +5,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.vidracariaCampos.exception.InternalErrorException;
+import com.vidracariaCampos.exception.InternalLogicException;
+import com.vidracariaCampos.exception.NotAuthorizeException;
+import com.vidracariaCampos.model.dto.ResponseToken;
 import com.vidracariaCampos.model.entity.User;
 import com.vidracariaCampos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,7 @@ public class TokenService {
     private UserRepository userRepository;
 
 
-    public String generateToken(User user){
+    public ResponseToken generateToken(User user){
         try {
             System.out.println(user);
             Algorithm algorithm =  Algorithm.HMAC256(secret);
@@ -35,10 +39,10 @@ public class TokenService {
                     .withExpiresAt(genExpirationToken())
                     .sign(algorithm);
 
-            return "{\"token\":\"" + token + "\",\"tokenRefresh\":\"" + genTokenRefresh(user) + "\"}";
+            return new ResponseToken(token, genTokenRefresh(user));
 
         }catch (JWTCreationException e){
-            throw new RuntimeException("Erro generating token: ", e);
+            throw new InternalErrorException("Erro generating token: " + e.getMessage());
         }
     }
     private Instant genExpirationToken(){
@@ -84,10 +88,11 @@ public class TokenService {
                     .sign(algorithm);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error generating refresh token: " + e.getMessage(), e);
+            throw new InternalErrorException("Error generating refresh token: " + e.getMessage());
         }
     }
-    public String genNewToken(String refreshToken){
+
+    public ResponseToken genNewToken(String refreshToken){
         try {
             isValidRefreshToken(refreshToken);
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -103,12 +108,12 @@ public class TokenService {
             User user = userRepository.findById(id).orElseThrow();
             System.out.println(user);
             if(!user.getName().equals(userName)){
-                throw new RuntimeException("access denied");
+                throw new NotAuthorizeException("access denied");
             }
 
             return generateToken(user);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new InternalLogicException("Error generating new token: " + e.getMessage());
         }
     }
     private Instant genExpirationTokenForRefresh(){
@@ -124,7 +129,7 @@ public class TokenService {
                     .verify(refreshToken);
 
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Token Refresh invalid");
+            throw new InternalLogicException("Token Refresh invalid");
         }
     }
 }
